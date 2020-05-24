@@ -1,5 +1,7 @@
 from flask import Flask
 
+from bookqlub_api import utils
+
 
 app = Flask(__name__)
 
@@ -10,4 +12,4 @@ def hello_world():
 
 
 if __name__ == "__main":
-    app.run()
+    app.run(port=utils.config["app"]["port"])
