@@ -1,15 +1,19 @@
 from flask import Flask
+from flask_graphql import GraphQLView
 
-from bookqlub_api import utils
+from bookqlub_api import schema, utils
 
 
 app = Flask(__name__)
 session = utils.get_db_session()
 
 
-@app.route("/")
-def hello_world():
-    return "Hello, World"
+app.add_url_rule(
+    "/graphql",
+    view_func=GraphQLView.as_view(
+        "graphql", schema=schema.schema, graphiql=True, get_context=lambda: {"session": session}
+    ),
+)
 
 
 @app.teardown_appcontext
