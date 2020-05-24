@@ -1,3 +1,5 @@
+import enum
+
 from sqlalchemy.ext import declarative
 import sqlalchemy as SA
 
@@ -22,10 +24,17 @@ class Book(Base):
     release_date = SA.Column(SA.DateTime)
 
 
+class ReviewValue(enum.Enum):
+    EXCELLENT = "EXCELLENT"
+    GREAT = "GREAT"
+    GOOD = "GOOD"
+    OK = "OK"
+
+
 class Review(Base):
     __tablename__ = "reviews"
 
     user_id = SA.Column(SA.Integer, SA.ForeignKey("users.id"), primary_key=True)
     book_id = SA.Column(SA.Integer, SA.ForeignKey("books.id"), primary_key=True)
-    value = SA.Enum("EXCELLENT", "GREAT", "GOOD", "OK")
-    comment = SA.String()
+    value = SA.Column(SA.Enum(ReviewValue))
+    comment = SA.Column(SA.String())
