@@ -38,4 +38,28 @@ class Query(graphene.ObjectType):
         return Review.get_query(info).filter(models.Review.user_id == user_id).all()
 
 
-schema = graphene.Schema(query=Query)
+# Mutations
+
+
+class CreateUser(graphene.Mutation):
+    class Arguments:
+        full_name = graphene.String()
+        username = graphene.String()
+
+    ok = graphene.Boolean()
+    user = graphene.Field(lambda: User)
+
+    def mutate(root, info, full_name, username):
+        # TODO check unique username
+        session = info.context.get("session")
+        new_user = models.User(full_name=full_name, username=username)
+        session.add(new_user)
+        session.commit()
+        return CreateUser(user=new_user, ok=True)
+
+
+class Mutation(graphene.ObjectType):
+    create_user = CreateUser.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
