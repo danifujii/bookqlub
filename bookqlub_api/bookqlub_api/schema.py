@@ -1,7 +1,13 @@
+from functools import lru_cache
+
 import graphene
 import graphene_sqlalchemy
 
 from bookqlub_api import models
+
+
+# TODO remove hack done due to problems with Enum(s) in `graphene_sqlalchemy <= 2.2`
+graphene.Enum.from_enum = lru_cache(maxsize=None)(graphene.Enum.from_enum)
 
 
 class User(graphene_sqlalchemy.SQLAlchemyObjectType):
@@ -51,15 +57,34 @@ class CreateUser(graphene.Mutation):
 
     def mutate(root, info, full_name, username):
         # TODO check unique username
-        session = info.context.get("session")
+        session = info.context["session"]
         new_user = models.User(full_name=full_name, username=username)
         session.add(new_user)
         session.commit()
         return CreateUser(user=new_user, ok=True)
 
 
+class CreateReview(graphene.Mutation):
+    class Arguments:
+        book_id = graphene.ID()
+        user_id = graphene.ID()
+        comment = graphene.String()
+        value = graphene.Enum.from_enum(models.ReviewValue)()
+
+    ok = graphene.Boolean()
+    review = graphene.Field(lambda: Review)
+
+    def mutate(root, info, book_id, user_id, comment, value):
+        session = info.context["session"]
+        new_review = models.Review(user_id=user_id, book_id=book_id, value=value, comment=comment)
+        session.add(new_review)
+        session.commit()
+        return CreateReview(review=new_review, ok=True)
+
+
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
+    create_review = CreateReview.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

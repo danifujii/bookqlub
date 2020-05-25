@@ -18,6 +18,7 @@ CREATE TABLE reviews (
     book_id INTEGER NOT NULL,
     value   REVIEW  NOT NULL,
     comment VARCHAR,
+    created TIMESTAMP WITHOUT TIME ZONE NOT NULL    DEFAULT NOW(),
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (book_id) REFERENCES books (id),
     PRIMARY KEY(user_id, book_id)
