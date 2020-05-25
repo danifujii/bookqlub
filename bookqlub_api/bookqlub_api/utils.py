@@ -1,9 +1,11 @@
+import os
+
 import sqlalchemy as SA
 import toml
 from sqlalchemy import orm
 
 
-config = toml.load("config.cfg")
+config = toml.load(os.path.join(os.path.dirname(__file__), "config.cfg"))
 
 
 def get_db_session():

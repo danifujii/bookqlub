@@ -4,22 +4,17 @@ from flask_graphql import GraphQLView
 from bookqlub_api import schema, utils
 
 
-app = Flask(__name__)
-session = utils.get_db_session()
-
-
-app.add_url_rule(
-    "/graphql",
-    view_func=GraphQLView.as_view(
-        "graphql", schema=schema.schema, graphiql=True, get_context=lambda: {"session": session}
-    ),
-)
-
-
-@app.teardown_appcontext
-def shutdown_app(exception=None):
-    session.close()
+def create_app(session) -> Flask:
+    app = Flask(__name__)
+    app.add_url_rule(
+        "/graphql",
+        view_func=GraphQLView.as_view(
+            "graphql", schema=schema.schema, graphiql=True, get_context=lambda: {"session": session}
+        ),
+    )
+    return app
 
 
 if __name__ == "__main":
+    app = create_app(utils.get_db_session())
     app.run(port=utils.config["app"]["port"])
