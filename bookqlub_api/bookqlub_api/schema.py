@@ -56,10 +56,15 @@ class CreateUser(graphene.Mutation):
     user = graphene.Field(lambda: User)
 
     def mutate(root, info, full_name, username):
-        # TODO check unique username
-        session = info.context["session"]
+        session = info.context.get("session")
+
+        prev_user = User.get_query(info).filter(models.User.username == username).first()
+        if prev_user:
+            raise ValueError("Username already exists")
+
         new_user = models.User(full_name=full_name, username=username)
         session.add(new_user)
+        session.flush()  # To make new_user have ID set
         session.commit()
         return CreateUser(user=new_user, ok=True)
 

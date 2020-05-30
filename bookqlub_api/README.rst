@@ -37,8 +37,7 @@ the database.
 
 Finally, to start the server::
 
-    export FLASK_APP=bookqlub_api/application.py
-    flask run
+    python bookqlub_api/application.py
 
 **Note that this is not meant as a production deployment setup.**
 
