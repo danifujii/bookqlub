@@ -56,7 +56,6 @@ class CreateUser(graphene.Mutation):
         username = graphene.String()
         password = graphene.String()
 
-    ok = graphene.Boolean()
     user = graphene.Field(lambda: User)
     token = graphene.String()
 
@@ -71,11 +70,28 @@ class CreateUser(graphene.Mutation):
 
         new_user = models.User(full_name=full_name, username=username, password=hashed_password)
         session.add(new_user)
-        session.flush()  # To make new_user have ID set
+        session.flush()  # To make new_user have ID attribute set
         session.commit()
 
         token = create_token(new_user, info.context["secret"])
-        return CreateUser(user=new_user, ok=True, token=token)
+        return CreateUser(user=new_user, token=token)
+
+
+class Login(graphene.Mutation):
+    class Arguments:
+        username = graphene.String()
+        password = graphene.String()
+
+    user = graphene.Field(lambda: User)
+    token = graphene.String()
+
+    def mutate(root, info, username, password):
+        user = User.get_query(info).filter(models.User.username == username).first()
+        if not user or not bcrypt.checkpw(password.encode(), user.password):
+            raise ValueError("Invalid username or password")
+
+        token = create_token(user, info.context["secret"])
+        return Login(user=user, token=token)
 
 
 class CreateReview(graphene.Mutation):
@@ -85,7 +101,6 @@ class CreateReview(graphene.Mutation):
         comment = graphene.String()
         value = graphene.Enum.from_enum(models.ReviewValue)()
 
-    ok = graphene.Boolean()
     review = graphene.Field(lambda: Review)
 
     def mutate(root, info, book_id, user_id, comment, value):
@@ -93,12 +108,13 @@ class CreateReview(graphene.Mutation):
         new_review = models.Review(user_id=user_id, book_id=book_id, value=value, comment=comment)
         session.add(new_review)
         session.commit()
-        return CreateReview(review=new_review, ok=True)
+        return CreateReview(review=new_review)
 
 
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
+    login = Login.Field()
 
 
 def create_token(user: models.User, secret: str) -> str:
