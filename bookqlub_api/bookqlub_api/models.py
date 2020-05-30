@@ -13,6 +13,7 @@ class User(Base):
     id = SA.Column(SA.Integer, primary_key=True)
     username = SA.Column(SA.String)
     full_name = SA.Column(SA.String)
+    password = SA.Column(SA.String)
 
 
 class Book(Base):

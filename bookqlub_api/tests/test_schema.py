@@ -1,9 +1,10 @@
 from datetime import datetime
 import unittest
 
+import jwt
 from alchemy_mock.mocking import UnifiedAlchemyMagicMock
 
-from bookqlub_api import application, models
+from bookqlub_api import application, models, utils
 
 
 class BaseTestSchema(unittest.TestCase):
@@ -31,14 +32,17 @@ class TestUserSchema(BaseTestSchema):
     def test_user_creation(self):
         # Create new user
         mutation = """
-            mutation CreateUser($full_name: String!, $username: String!) {
-                createUser(fullName: $full_name, username: $username) {
+            mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
+                createUser(fullName: $full_name, username: $username, password: $pass) {
                     ok
+                    token
                 }
             }
         """
-        variables = {"full_name": "Daniel", "username": "dan"}
-        self.graphql_request(mutation, variables)
+        variables = {"full_name": "Daniel", "username": "dan", "pass": "hello"}
+        resp = self.graphql_request(mutation, variables)
+        token = resp.get("data", {}).get("createUser").get("token")
+        self.assertIn("userId", jwt.decode(token, utils.config["app"]["secret"]))
 
         # Check user was saved correctly
         resp_data = self.graphql_request("{ users { username } }").get("data", {})

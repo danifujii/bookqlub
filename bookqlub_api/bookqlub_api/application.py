@@ -5,11 +5,13 @@ from bookqlub_api import schema, utils
 
 
 def create_app(session) -> Flask:
+    graphql_context = {"session": session, "secret": utils.config["app"]["secret"]}
+
     app = Flask(__name__)
     app.add_url_rule(
         "/graphql",
         view_func=GraphQLView.as_view(
-            "graphql", schema=schema.schema, graphiql=True, get_context=lambda: {"session": session}
+            "graphql", schema=schema.schema, graphiql=True, get_context=lambda: graphql_context
         ),
     )
     return app

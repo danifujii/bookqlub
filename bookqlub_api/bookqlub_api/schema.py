@@ -1,7 +1,9 @@
 from functools import lru_cache
 
+import bcrypt
 import graphene
 import graphene_sqlalchemy
+import jwt
 
 from bookqlub_api import models
 
@@ -13,6 +15,7 @@ graphene.Enum.from_enum = lru_cache(maxsize=None)(graphene.Enum.from_enum)
 class User(graphene_sqlalchemy.SQLAlchemyObjectType):
     class Meta:
         model = models.User
+        exclude_fields = ("password",)
 
 
 class Book(graphene_sqlalchemy.SQLAlchemyObjectType):
@@ -51,22 +54,28 @@ class CreateUser(graphene.Mutation):
     class Arguments:
         full_name = graphene.String()
         username = graphene.String()
+        password = graphene.String()
 
     ok = graphene.Boolean()
     user = graphene.Field(lambda: User)
+    token = graphene.String()
 
-    def mutate(root, info, full_name, username):
-        session = info.context.get("session")
+    def mutate(root, info, full_name, username, password):
+        session = info.context["session"]
 
         prev_user = User.get_query(info).filter(models.User.username == username).first()
         if prev_user:
             raise ValueError("Username already exists")
 
-        new_user = models.User(full_name=full_name, username=username)
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+        new_user = models.User(full_name=full_name, username=username, password=hashed_password)
         session.add(new_user)
         session.flush()  # To make new_user have ID set
         session.commit()
-        return CreateUser(user=new_user, ok=True)
+
+        token = create_token(new_user, info.context["secret"])
+        return CreateUser(user=new_user, ok=True, token=token)
 
 
 class CreateReview(graphene.Mutation):
@@ -90,6 +99,11 @@ class CreateReview(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
+
+
+def create_token(user: models.User, secret: str) -> str:
+    payload = {"userId": user.id}
+    return jwt.encode(payload, secret, algorithm="HS256").decode("utf8")
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
