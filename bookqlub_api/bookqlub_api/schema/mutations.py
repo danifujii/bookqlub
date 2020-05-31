@@ -1,10 +1,10 @@
 from functools import lru_cache
 
+from flask import request
 import bcrypt
 import graphene
-import jwt
 
-from bookqlub_api.schema import models, types
+from bookqlub_api.schema import models, types, utils
 
 
 # TODO remove hack done due to problems with Enum(s) in `graphene_sqlalchemy <= 2.2`
@@ -37,7 +37,7 @@ class CreateUser(graphene.Mutation):
         session.flush()  # To make new_user have ID attribute set
         session.commit()
 
-        token = create_token(new_user, info.context["secret"])
+        token = utils.create_token(new_user.id, info.context["secret"])
         return CreateUser(user=new_user, token=token)
 
 
@@ -54,7 +54,7 @@ class Login(graphene.Mutation):
         if not user or not bcrypt.checkpw(password.encode(), user.password):
             raise ValueError("Invalid username or password")
 
-        token = create_token(user, info.context["secret"])
+        token = utils.create_token(user.id, info.context["secret"])
         return Login(user=user, token=token)
 
 
@@ -67,7 +67,8 @@ class CreateReview(graphene.Mutation):
 
     review = graphene.Field(lambda: types.Review)
 
-    def mutate(root, info, book_id, user_id, comment, value):
+    def mutate(root, info, book_id, comment, value):
+        user_id = utils.validate_user_id(request, info.context["secret"])
         session = info.context["session"]
         new_review = models.Review(user_id=user_id, book_id=book_id, value=value, comment=comment)
         session.add(new_review)
@@ -79,8 +80,3 @@ class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
     login = Login.Field()
-
-
-def create_token(user: models.User, secret: str) -> str:
-    payload = {"userId": user.id}
-    return jwt.encode(payload, secret, algorithm="HS256").decode("utf8")

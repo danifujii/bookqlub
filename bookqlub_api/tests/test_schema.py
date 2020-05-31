@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 from unittest import mock
 import unittest
 
@@ -7,7 +8,7 @@ import bcrypt
 import jwt
 
 from bookqlub_api import application, utils
-from bookqlub_api.schema import models
+from bookqlub_api.schema import models, utils as schema_utils
 
 
 class BaseTestSchema(unittest.TestCase):
@@ -22,14 +23,22 @@ class BaseTestSchema(unittest.TestCase):
         self.session.rollback()
         self.session.close()
 
-    def graphql_request(self, query: str, variables: dict = None) -> dict:
+    def graphql_request(self, query: str, variables: dict = None, headers: dict = None) -> dict:
         request_body = {"query": query}
         if variables:
             request_body["variables"] = variables
 
-        resp = self.client.post("/graphql", json=request_body)
+        if not headers:
+            headers = {}
+
+        resp = self.client.post("/graphql", json=request_body, headers=headers)
         self.assertEqual(resp.status_code, 200, resp.json)
         return resp.json
+
+    def get_headers_with_auth(self, token=None, user_id: int = 1) -> Dict[str, str]:
+        if not token:
+            token = schema_utils.create_token(user_id, utils.config["app"]["secret"])
+        return {"Authorization": f"Bearer {token}"}
 
 
 class TestUserSchema(BaseTestSchema):
@@ -51,10 +60,15 @@ class TestUserSchema(BaseTestSchema):
         )
 
         # Check user was saved correctly
-        resp_data = self.graphql_request("{ users { username } }").get("data", {})
-        users = resp_data.get("users")
-        self.assertEqual(len(users), 1)
-        self.assertEqual(users[0].get("username"), variables.get("username"))
+        resp_data = self.graphql_request(
+            "{ user { username } }",
+            # Cannot use response token because SQLAlchemy mock doesn't set the new user ID
+            headers=self.get_headers_with_auth(),
+        )
+        resp_data = resp_data.get("data", {})
+        user = resp_data.get("user")
+        self.assertTrue(user)
+        self.assertEqual(user.get("username"), variables.get("username"))
 
 
 class TestLoginSchema(BaseTestSchema):
@@ -115,10 +129,10 @@ class TestReviewSchema(BaseTestSchema):
         # Create new review
         mutation = """
             mutation CreateReview (
-                $user_id: ID!, $book_id: ID!, $comment: String!, $value: ReviewValue!
+                $book_id: ID!, $comment: String!, $value: ReviewValue!
             ) {
                 createReview (
-                    userId: $user_id, bookId: $book_id, comment: $comment, value: $value
+                    bookId: $book_id, comment: $comment, value: $value
                 ) {
                     review {
                         bookId
@@ -127,16 +141,23 @@ class TestReviewSchema(BaseTestSchema):
             }
         """
         variables = {
-            "user_id": 1,
             "book_id": 1,
             "comment": "Pretty good book",
             "value": "GOOD",
         }
-        self.graphql_request(mutation, variables)
+        self.graphql_request(mutation, variables, self.get_headers_with_auth())
 
         # Check review was saved correctly
-        query = "{ reviews(userId: %d) { comment } }" % variables["user_id"]
-        resp_data = self.graphql_request(query).get("data", {})
+        query = "{ reviews { comment } }"
+        resp_data = self.graphql_request(query, headers=self.get_headers_with_auth()).get(
+            "data", {}
+        )
         reviews = resp_data.get("reviews")
-        self.assertEqual(len(reviews), 1)
+        self.assertTrue(reviews)
         self.assertEqual(reviews[0].get("comment"), variables["comment"])
+
+    def test_reviews_unauthorized(self):
+        query = "{ reviews { comment } }"
+        errors = self.graphql_request(query).get("errors")
+        self.assertTrue(errors)
+        self.assertEqual(errors[0].get("message"), "Invalid authentication token")

@@ -1,22 +1,22 @@
+from flask import request
 import graphene
 
-from bookqlub_api.schema import models, types
+from bookqlub_api.schema import models, types, utils
 
 
 class Query(graphene.ObjectType):
-    users = graphene.List(types.User)
     books = graphene.List(types.Book)
-    user = graphene.Field(types.User, id=graphene.ID(required=True))
-    reviews = graphene.List(types.Review, user_id=graphene.ID(required=True))
-
-    def resolve_users(self, info):
-        return types.User.get_query(info).all()
+    user = graphene.Field(types.User)
+    reviews = graphene.List(types.Review)
 
     def resolve_books(self, info):
+        _ = utils.validate_user_id(request, info.context["secret"])
         return types.Book.get_query(info).all()
 
-    def resolve_user(self, info, id):
-        return types.User.get_query(info).filter(models.User.id == id).first()
+    def resolve_user(self, info):
+        user_id = utils.validate_user_id(request, info.context["secret"])
+        return types.User.get_query(info).filter(models.User.id == user_id).first()
 
-    def resolve_reviews(self, info, user_id):
+    def resolve_reviews(self, info):
+        user_id = utils.validate_user_id(request, info.context["secret"])
         return types.Review.get_query(info).filter(models.Review.user_id == user_id).all()
