@@ -11,7 +11,10 @@ def create_app(session) -> Flask:
     app.add_url_rule(
         "/graphql",
         view_func=GraphQLView.as_view(
-            "graphql", schema=schema.schema, graphiql=True, get_context=lambda: graphql_context
+            "graphql",
+            schema=schema.schema,
+            graphiql=utils.config["app"]["graphiql"],
+            get_context=lambda: graphql_context,
         ),
     )
     return app
