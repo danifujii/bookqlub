@@ -42,17 +42,30 @@ class BaseTestSchema(unittest.TestCase):
 
 
 class TestUserSchema(BaseTestSchema):
+
+    mutation = """
+        mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
+            createUser(fullName: $full_name, username: $username, password: $pass) {
+                token
+            }
+        }
+    """
+
+    def setUp(self):
+        self.session = UnifiedAlchemyMagicMock(
+            data=[
+                (
+                    [mock.call.filter(models.User.username == "dan")],
+                    [models.User(full_name="Daniel", username="dan", password="hi")],
+                ),
+            ]
+        )
+        super().setUp()
+
     def test_user_creation(self):
         # Create new user
-        mutation = """
-            mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
-                createUser(fullName: $full_name, username: $username, password: $pass) {
-                    token
-                }
-            }
-        """
-        variables = {"full_name": "Daniel", "username": "dan", "pass": "hello"}
-        resp = self.graphql_request(mutation, variables)
+        variables = {"full_name": "Daniel", "username": "daniel", "pass": "hello"}
+        resp = self.graphql_request(self.mutation, variables)
         token = resp.get("data", {}).get("createUser").get("token")
         self.assertTrue(token)
         self.assertIn(
@@ -69,6 +82,12 @@ class TestUserSchema(BaseTestSchema):
         user = resp_data.get("user")
         self.assertTrue(user)
         self.assertEqual(user.get("username"), variables.get("username"))
+
+    def test_user_already_exists(self):
+        variables = {"full_name": "Daniel", "username": "dan", "pass": "hello"}
+        errors = self.graphql_request(self.mutation, variables).get("errors")
+        self.assertTrue(errors)
+        self.assertEqual(errors[0].get("message"), "Username already exists")
 
 
 class TestLoginSchema(BaseTestSchema):
