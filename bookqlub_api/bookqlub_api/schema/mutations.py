@@ -2,49 +2,13 @@ from functools import lru_cache
 
 import bcrypt
 import graphene
-import graphene_sqlalchemy
 import jwt
 
-from bookqlub_api import models
+from bookqlub_api.schema import models, types
 
 
 # TODO remove hack done due to problems with Enum(s) in `graphene_sqlalchemy <= 2.2`
 graphene.Enum.from_enum = lru_cache(maxsize=None)(graphene.Enum.from_enum)
-
-
-class User(graphene_sqlalchemy.SQLAlchemyObjectType):
-    class Meta:
-        model = models.User
-        exclude_fields = ("password",)
-
-
-class Book(graphene_sqlalchemy.SQLAlchemyObjectType):
-    class Meta:
-        model = models.Book
-
-
-class Review(graphene_sqlalchemy.SQLAlchemyObjectType):
-    class Meta:
-        model = models.Review
-
-
-class Query(graphene.ObjectType):
-    users = graphene.List(User)
-    books = graphene.List(Book)
-    user = graphene.Field(User, id=graphene.ID(required=True))
-    reviews = graphene.List(Review, user_id=graphene.ID(required=True))
-
-    def resolve_users(self, info):
-        return User.get_query(info).all()
-
-    def resolve_books(self, info):
-        return Book.get_query(info).all()
-
-    def resolve_user(self, info, id):
-        return User.get_query(info).filter(models.User.id == id).first()
-
-    def resolve_reviews(self, info, user_id):
-        return Review.get_query(info).filter(models.Review.user_id == user_id).all()
 
 
 # Mutations
@@ -56,13 +20,13 @@ class CreateUser(graphene.Mutation):
         username = graphene.String()
         password = graphene.String()
 
-    user = graphene.Field(lambda: User)
+    user = graphene.Field(lambda: types.User)
     token = graphene.String()
 
     def mutate(root, info, full_name, username, password):
         session = info.context["session"]
 
-        prev_user = User.get_query(info).filter(models.User.username == username).first()
+        prev_user = types.User.get_query(info).filter(models.User.username == username).first()
         if prev_user:
             raise ValueError("Username already exists")
 
@@ -82,11 +46,11 @@ class Login(graphene.Mutation):
         username = graphene.String()
         password = graphene.String()
 
-    user = graphene.Field(lambda: User)
+    user = graphene.Field(lambda: types.User)
     token = graphene.String()
 
     def mutate(root, info, username, password):
-        user = User.get_query(info).filter(models.User.username == username).first()
+        user = types.User.get_query(info).filter(models.User.username == username).first()
         if not user or not bcrypt.checkpw(password.encode(), user.password):
             raise ValueError("Invalid username or password")
 
@@ -101,7 +65,7 @@ class CreateReview(graphene.Mutation):
         comment = graphene.String()
         value = graphene.Enum.from_enum(models.ReviewValue)()
 
-    review = graphene.Field(lambda: Review)
+    review = graphene.Field(lambda: types.Review)
 
     def mutate(root, info, book_id, user_id, comment, value):
         session = info.context["session"]
@@ -120,6 +84,3 @@ class Mutation(graphene.ObjectType):
 def create_token(user: models.User, secret: str) -> str:
     payload = {"userId": user.id}
     return jwt.encode(payload, secret, algorithm="HS256").decode("utf8")
-
-
-schema = graphene.Schema(query=Query, mutation=Mutation)

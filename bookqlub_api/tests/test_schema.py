@@ -6,7 +6,8 @@ from alchemy_mock.mocking import UnifiedAlchemyMagicMock
 import bcrypt
 import jwt
 
-from bookqlub_api import application, models, utils
+from bookqlub_api import application, utils
+from bookqlub_api.schema import models
 
 
 class BaseTestSchema(unittest.TestCase):

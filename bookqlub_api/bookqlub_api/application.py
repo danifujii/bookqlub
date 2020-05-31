@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_graphql import GraphQLView
 
-from bookqlub_api import schema, utils
+from bookqlub_api import utils
+from bookqlub_api.schema import schema
 
 
 def create_app(session) -> Flask:
