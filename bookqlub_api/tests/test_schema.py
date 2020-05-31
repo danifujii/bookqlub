@@ -46,7 +46,9 @@ class TestUserSchema(BaseTestSchema):
         resp = self.graphql_request(mutation, variables)
         token = resp.get("data", {}).get("createUser").get("token")
         self.assertTrue(token)
-        self.assertIn("userId", jwt.decode(token, utils.config["app"]["secret"]))
+        self.assertIn(
+            "userId", jwt.decode(token, utils.config["app"]["secret"], algorithms=["HS256"])
+        )
 
         # Check user was saved correctly
         resp_data = self.graphql_request("{ users { username } }").get("data", {})
@@ -82,7 +84,9 @@ class TestLoginSchema(BaseTestSchema):
         variables = {"username": "dan", "pass": self.password}
         resp = self.graphql_request(self.login_mutation, variables)
         token = resp.get("data", {}).get("login").get("token")
-        self.assertIn("userId", jwt.decode(token, utils.config["app"]["secret"]))
+        self.assertIn(
+            "userId", jwt.decode(token, utils.config["app"]["secret"], algorithms=["HS256"])
+        )
 
     def test_invalid_user(self):
         variables = {"username": "daniel", "pass": self.password}
