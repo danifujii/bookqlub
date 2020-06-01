@@ -102,7 +102,7 @@ class TestLoginSchema(BaseTestSchema):
     password = "hello"
 
     def setUp(self):
-        password = bcrypt.hashpw(self.password.encode(), bcrypt.gensalt())
+        password = bcrypt.hashpw(self.password.encode(), bcrypt.gensalt()).decode("utf8")
         self.session = UnifiedAlchemyMagicMock(
             data=[
                 (

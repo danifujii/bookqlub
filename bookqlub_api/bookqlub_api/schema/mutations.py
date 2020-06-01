@@ -11,9 +11,6 @@ from bookqlub_api.schema import models, types, utils
 graphene.Enum.from_enum = lru_cache(maxsize=None)(graphene.Enum.from_enum)
 
 
-# Mutations
-
-
 class CreateUser(graphene.Mutation):
     class Arguments:
         full_name = graphene.String()
@@ -30,7 +27,7 @@ class CreateUser(graphene.Mutation):
         if prev_user:
             raise ValueError("Username already exists")
 
-        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode("utf8")
 
         new_user = models.User(full_name=full_name, username=username, password=hashed_password)
         session.add(new_user)
@@ -51,7 +48,7 @@ class Login(graphene.Mutation):
 
     def mutate(root, info, username, password):
         user = types.User.get_query(info).filter(models.User.username == username).first()
-        if not user or not bcrypt.checkpw(password.encode(), user.password):
+        if not user or not bcrypt.checkpw(password.encode(), user.password.encode()):
             raise ValueError("Invalid username or password")
 
         token = utils.create_token(user.id, info.context["secret"])
