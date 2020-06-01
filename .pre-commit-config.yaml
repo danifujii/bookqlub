@@ -10,7 +10,3 @@ repos:
   hooks:
   - id: flake8
     args: ['--max-line-length=100']
-- repo: https://github.com/prettier/prettier
-  rev: 2.0.5
-  hooks:
-    - id: prettier
