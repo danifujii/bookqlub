@@ -1,0 +1,19 @@
+.LoginWrapper {
+    height: 100%;
+    display: flex;
+}
+
+.LoginContainer {
+    text-align: center;
+    flex: 1;
+    padding: 1rem;
+}
+
+.LoginWelcomeContainer {
+    background: #EE6C4D;
+}
+
+.LoginContainerContent {
+    position: relative;
+    top: 30%;
+}

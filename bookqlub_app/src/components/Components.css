@@ -1,0 +1,61 @@
+.WelcomeHeaderSmall {
+    margin: 0 auto;
+    font-size: 5em;
+    color: whitesmoke;
+    font-family: 'Public Sans';
+    font-weight: 800;
+}
+
+.WelcomeHeaderLarge {
+    margin: 0 auto;
+    font-size: 7em;
+    color: whitesmoke;
+    font-family: 'Public Sans';
+    font-weight: 800;
+}
+
+.WelcomeSubheader {
+    font-size: 1.6em;
+    color: whitesmoke;
+    opacity: 0.9;
+}
+
+.LoginHeader {
+    font-family: 'Public Sans';
+    font-weight: 900;
+    margin: 0;
+}
+
+.LoginSubheader {
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-top: 0.3em;
+    margin-bottom: 1.5em;
+    padding: 0;
+}
+
+.LoginInput {
+    width: 50%;
+}
+
+.DividerContainer {
+    display: flex;
+    margin: 0 auto;
+}
+
+.DividerLineContainer {
+    flex: 8;
+}
+
+.DividerText {
+    flex: 1;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: slategray;
+}
+
+.DividerWrapper {
+    margin-top: 20px;
+    width: 55%;
+    margin: 20px auto 0;
+}
