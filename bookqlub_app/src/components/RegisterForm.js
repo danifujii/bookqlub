@@ -5,34 +5,33 @@ import { useMutation } from "@apollo/react-hooks";
 
 import { OrDivider } from "./OrDivider";
 
-const LOGIN = gql`
-  mutation Login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      user {
-        username
-      }
+const REGISTER = gql`
+  mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
+    createUser(fullName: $full_name, username: $username, password: $pass) {
       token
     }
   }
 `;
 
-export const LoginForm = (props) => {
-  const { onRegister } = props;
-  const [login, { data, loading, error }] = useMutation(LOGIN);
+export const RegisterForm = (props) => {
+  const { onLogin } = props;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  if (error) {
-    console.log(error);
-  }
-  if (data) {
-    console.log(data.login);
-  }
+  const [fullname, setFullname] = useState("");
+  const [register, { data, loading, error }] = useMutation(REGISTER);
 
   return (
     <div>
       <div>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Full name"
+              variant="outlined"
+              className="LoginInput"
+              onChange={(e) => setFullname(e.target.value)}
+            />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               label="Username"
@@ -55,19 +54,19 @@ export const LoginForm = (props) => {
               variant="contained"
               color="primary"
               size="large"
-              onClick={(e) =>
-                login({ variables: { username, password } }).catch((_) => {})
+              onClick={() =>
+                register(fullname, username, password).catch((_) => {})
               }
             >
-              Login
+              Register
             </Button>
           </Grid>
         </Grid>
         <div className="DividerWrapper">
           <OrDivider />
         </div>
-        <Button size="large" color="primary" onClick={() => onRegister()}>
-          Register
+        <Button size="large" color="primary" onClick={() => onLogin()}>
+          Login
         </Button>
       </div>
     </div>
