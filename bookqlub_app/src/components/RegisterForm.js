@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid, TextField } from "@material-ui/core";
+import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
@@ -50,16 +50,20 @@ export const RegisterForm = (props) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={() =>
-                register(fullname, username, password).catch((_) => {})
-              }
-            >
-              Register
-            </Button>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() =>
+                  register(fullname, username, password).catch((_) => {})
+                }
+              >
+                Register
+              </Button>
+            )}
           </Grid>
         </Grid>
         <div className="DividerWrapper">
