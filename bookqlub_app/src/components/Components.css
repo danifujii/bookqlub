@@ -86,3 +86,46 @@
     font-family: 'Roboto', sans-serif;
     font-weight: 900;
 }
+
+.ReviewContainer {
+    display: flex;
+}
+
+.ReviewContainer:hover {
+    background-color: #f2d3c9;
+}
+
+.ReviewCover {
+    width: 160px;
+}
+
+.ReviewDetailContainer {
+    flex: 2;
+    padding: 0 16px;
+    font-family: 'Public Sans', sans-serif;
+    position: relative;
+    top: 15%;
+}
+
+
+.ReviewDetailContainer p {
+    margin: 8px 0;
+}
+
+.ReviewDetailTitle {
+    font-weight: 800;
+    font-size: 1.3em;
+}
+
+.ReviewDetailValue {
+    font-style: italic;
+    font-weight: 500;
+    color: #EE6C4D;
+    margin: 24px 0 !important;
+}
+
+.ReviewDetailDate {
+    font-style: italic;
+    font-size: 0.9em;
+    font-weight: 500;
+}

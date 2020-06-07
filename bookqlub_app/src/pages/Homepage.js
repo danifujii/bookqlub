@@ -2,14 +2,14 @@ import React from "react";
 import Container from "@material-ui/core/Container";
 
 import { Header } from "../components/Header";
-import { ReviewContainer } from "../components/ReviewContainer";
+import { ReviewsContainer } from "../components/ReviewsContainer";
 
 export const Homepage = () => {
   return (
     <div>
       <Container maxWidth="lg">
         <Header />
-        <ReviewContainer />
+        <ReviewsContainer />
       </Container>
     </div>
   );
