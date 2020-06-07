@@ -4,9 +4,10 @@ import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 import { WelcomeMsg } from "../components/WelcomeMsg";
 
-const onUser = (data, setUserData) => {
+const onUser = (data, setUsername) => {
   localStorage.setItem("token", data.token);
-  setUserData(data.user);
+  localStorage.setItem("username", data.user.username);
+  setUsername(data.user.username);
 };
 
 export const Login = (props) => {
@@ -28,12 +29,12 @@ export const Login = (props) => {
           {onLogin ? (
             <LoginForm
               onRegister={() => setOnLogin(false)}
-              onUser={(ud) => onUser(ud, props.setUserData)}
+              onUser={(ud) => onUser(ud, props.setUsername)}
             />
           ) : (
             <RegisterForm
               onLogin={() => setOnLogin(true)}
-              onUser={(ud) => onUser(ud, props.setUserData)}
+              onUser={(ud) => onUser(ud, props.setUsername)}
             />
           )}
         </div>

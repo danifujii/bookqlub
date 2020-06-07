@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -23,9 +23,11 @@ const LoginFormFields = (props) => {
   const [password, setPassword] = useState("");
   const [inputError, setInputError] = useState(undefined);
 
-  if (data) {
-    props.onUser(data.login);
-  }
+  useEffect(() => {
+    if (data) {
+      props.onUser(data.login);
+    }
+  }, [data]);
 
   return (
     <Grid container spacing={2}>

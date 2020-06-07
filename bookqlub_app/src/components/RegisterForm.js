@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
@@ -25,9 +25,11 @@ export const RegisterForm = (props) => {
   const [inputError, setInputError] = useState(undefined);
   const [register, { data, loading, error }] = useMutation(REGISTER);
 
-  if (data) {
-    props.onUser(data.createUser);
-  }
+  useEffect(() => {
+    if (data) {
+      props.onUser(data.createUser);
+    }
+  }, [data]);
 
   return (
     <div>

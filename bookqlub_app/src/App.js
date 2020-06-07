@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ApolloClient from "apollo-client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -41,18 +41,13 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  const [userData, setUserData] = useState(localStorage.getItem("userData"));
-  useEffect(() => {
-    if (userData) {
-      localStorage.setItem("userData", userData);
-    }
-  }, [userData]);
+  const [username, setUsername] = useState(localStorage.getItem("username"));
 
   return (
     <div style={{ height: "100%" }}>
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
-          {userData ? <Homepage /> : <Login setUserData={setUserData} />}
+          {username ? <Homepage /> : <Login setUsername={setUsername} />}
         </ThemeProvider>
       </ApolloProvider>
     </div>
