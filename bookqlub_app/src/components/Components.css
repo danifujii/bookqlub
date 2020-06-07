@@ -69,3 +69,20 @@
     width: 55%;
     margin: 20px auto 0;
 }
+
+.HeaderContent {
+    color: #EE6C4D;
+    font-size: 1.9em;
+    text-align: center;
+    padding: 16px 0;
+}
+
+.HeaderDivider {
+    height: 3px;
+    background-color: #E7AD99;
+}
+
+.ReviewHeader {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+}
