@@ -4,7 +4,12 @@ import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 import { WelcomeMsg } from "../components/WelcomeMsg";
 
-export const Login = () => {
+const onUser = (data, setUserData) => {
+  localStorage.setItem("token", data.token);
+  setUserData(data.user);
+};
+
+export const Login = (props) => {
   const [onLogin, setOnLogin] = useState(true);
 
   return (
@@ -21,9 +26,15 @@ export const Login = () => {
             {onLogin ? "Login to your account" : "Create a new account"}
           </p>
           {onLogin ? (
-            <LoginForm onRegister={() => setOnLogin(false)} />
+            <LoginForm
+              onRegister={() => setOnLogin(false)}
+              onUser={(ud) => onUser(ud, props.setUserData)}
+            />
           ) : (
-            <RegisterForm onLogin={() => setOnLogin(true)} />
+            <RegisterForm
+              onLogin={() => setOnLogin(true)}
+              onUser={(ud) => onUser(ud, props.setUserData)}
+            />
           )}
         </div>
       </div>

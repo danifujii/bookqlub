@@ -17,11 +17,15 @@ const LOGIN = gql`
   }
 `;
 
-const LoginFormFields = () => {
+const LoginFormFields = (props) => {
   const [login, { data, loading, error }] = useMutation(LOGIN);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [inputError, setInputError] = useState(undefined);
+
+  if (data) {
+    props.onUser(data.login);
+  }
 
   return (
     <Grid container spacing={2}>
@@ -73,7 +77,7 @@ export const LoginForm = (props) => {
   return (
     <div>
       <div>
-        <LoginFormFields />
+        <LoginFormFields {...props} />
         <div className="DividerWrapper">
           <OrDivider />
         </div>

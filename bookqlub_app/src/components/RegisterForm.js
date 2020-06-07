@@ -9,6 +9,9 @@ import { onMutation } from "./FormUtils";
 const REGISTER = gql`
   mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
     createUser(fullName: $full_name, username: $username, password: $pass) {
+      user {
+        username
+      }
       token
     }
   }
@@ -21,6 +24,10 @@ export const RegisterForm = (props) => {
   const [fullname, setFullname] = useState("");
   const [inputError, setInputError] = useState(undefined);
   const [register, { data, loading, error }] = useMutation(REGISTER);
+
+  if (data) {
+    props.onUser(data.createUser);
+  }
 
   return (
     <div>
