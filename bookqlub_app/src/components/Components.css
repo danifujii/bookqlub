@@ -38,6 +38,16 @@
     width: 50%;
 }
 
+.LoginErrorMsg {
+    font-size: 0.9em;
+    color: maroon;
+    margin: 0;
+    text-align: left;
+    position: relative;
+    left: 25%;
+    width: 50%;
+}
+
 .DividerContainer {
     display: flex;
     margin: 0 auto;

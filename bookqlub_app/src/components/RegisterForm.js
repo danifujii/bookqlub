@@ -58,7 +58,9 @@ export const RegisterForm = (props) => {
                 color="primary"
                 size="large"
                 onClick={() =>
-                  register(fullname, username, password).catch((_) => {})
+                  register({
+                    variables: { fullname, username, password },
+                  }).catch((_) => {})
                 }
               >
                 Register
