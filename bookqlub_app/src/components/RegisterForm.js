@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
 import { OrDivider } from "./OrDivider";
+import { onMutation } from "./FormUtils";
 
 const REGISTER = gql`
   mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
@@ -18,6 +19,7 @@ export const RegisterForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullname, setFullname] = useState("");
+  const [inputError, setInputError] = useState(undefined);
   const [register, { data, loading, error }] = useMutation(REGISTER);
 
   return (
@@ -49,6 +51,11 @@ export const RegisterForm = (props) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Grid>
+          {(error || inputError) && (
+            <Grid item xs={12}>
+              <p className="LoginErrorMsg">{inputError || error.message}</p>
+            </Grid>
+          )}
           <Grid item xs={12}>
             {loading ? (
               <CircularProgress />
@@ -58,9 +65,11 @@ export const RegisterForm = (props) => {
                 color="primary"
                 size="large"
                 onClick={() =>
-                  register({
-                    variables: { fullname, username, password },
-                  }).catch((_) => {})
+                  onMutation(
+                    register,
+                    { fullname, username, password },
+                    setInputError
+                  )
                 }
               >
                 Register

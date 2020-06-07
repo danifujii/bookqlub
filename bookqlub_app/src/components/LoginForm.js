@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
 import { OrDivider } from "./OrDivider";
+import { onMutation } from "./FormUtils";
 
 const LOGIN = gql`
   mutation Login($username: String!, $password: String!) {
@@ -15,17 +16,6 @@ const LOGIN = gql`
     }
   }
 `;
-
-const onLogin = (login, variables, setInputError) => {
-  setInputError(undefined); // Clean up previous error
-  Object.keys(variables).forEach((k) => {
-    if (!variables[k]) {
-      setInputError(k.charAt(0).toUpperCase() + k.slice(1) + " is empty");
-      return;
-    }
-  });
-  login({ variables: variables }).catch((_) => {});
-};
 
 const LoginFormFields = () => {
   const [login, { data, loading, error }] = useMutation(LOGIN);
@@ -66,7 +56,7 @@ const LoginFormFields = () => {
             color="primary"
             size="large"
             onClick={(_) =>
-              onLogin(login, { username, password }, setInputError)
+              onMutation(login, { username, password }, setInputError)
             }
           >
             Login
