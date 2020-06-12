@@ -170,7 +170,7 @@ class TestReviewSchema(BaseTestSchema):
         self.graphql_request(self.review_mutation, variables, self.get_headers_with_auth())
 
         # Check review was saved correctly
-        query = "{ reviews { comment } }"
+        query = "{ reviews(year: 2020) { comment } }"
         resp_data = self.graphql_request(query, headers=self.get_headers_with_auth()).get(
             "data", {}
         )
@@ -179,7 +179,7 @@ class TestReviewSchema(BaseTestSchema):
         self.assertEqual(reviews[0].get("comment"), variables["comment"])
 
     def test_reviews_unauthorized(self):
-        query = "{ reviews { comment } }"
+        query = "{ reviews(year: 2020) { comment } }"
         errors = self.graphql_request(query).get("errors")
         self.assertTrue(errors)
         self.assertEqual(errors[0].get("message"), "Invalid authentication token")

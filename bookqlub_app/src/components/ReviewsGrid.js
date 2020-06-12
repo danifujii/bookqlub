@@ -6,8 +6,8 @@ import { LinearProgress, Grid } from "@material-ui/core";
 import { Review } from "./Review";
 
 const GET_REVIEWS = gql`
-  {
-    reviews {
+  query Reviews($year: Int!) {
+    reviews(year: $year) {
       created
       value
       book {
@@ -20,7 +20,9 @@ const GET_REVIEWS = gql`
 `;
 
 export const ReviewGrid = (props) => {
-  const { loading, error, data } = useQuery(GET_REVIEWS);
+  const { loading, error, data } = useQuery(GET_REVIEWS, {
+    variables: { year: props.year },
+  });
 
   if (loading) {
     return (
