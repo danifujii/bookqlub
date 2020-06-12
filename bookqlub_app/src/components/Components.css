@@ -92,6 +92,7 @@
 
 .ReviewContainer {
     display: flex;
+    height: 250px;
 }
 
 .ReviewContainer:hover {
