@@ -62,7 +62,9 @@ export const RegisterForm = (props) => {
           </Grid>
           {(error || inputError) && (
             <Grid item xs={12}>
-              <p className="LoginErrorMsg">{inputError || error.message}</p>
+              <p className="ErrorMsg LoginErrorMsg">
+                {inputError || error.message}
+              </p>
             </Grid>
           )}
           <Grid item xs={12}>

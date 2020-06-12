@@ -38,9 +38,12 @@
     width: 50%;
 }
 
-.LoginErrorMsg {
+.ErrorMsg {
     font-size: 0.9em;
     color: maroon;
+}
+
+.LoginErrorMsg {
     margin: 0;
     text-align: left;
     position: relative;
