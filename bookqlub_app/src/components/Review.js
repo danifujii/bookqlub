@@ -6,6 +6,7 @@ export const Review = () => {
       <div className="ReviewCover">
         <img
           src="https://images-na.ssl-images-amazon.com/images/I/91twTG-CQ8L.jpg"
+          alt="Book cover"
           width="100%"
           height="100%"
         />

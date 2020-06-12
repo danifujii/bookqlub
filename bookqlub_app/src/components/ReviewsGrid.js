@@ -7,13 +7,13 @@ export const ReviewGrid = () => {
     <div>
       <h2>January</h2>
       <Grid container spacing={2}>
-        <Grid item lg={4} md={6}>
+        <Grid item lg={4} md={6} xs={12}>
           <Review />
         </Grid>
-        <Grid item lg={4} md={6}>
+        <Grid item lg={4} md={6} xs={12}>
           <Review />
         </Grid>
-        <Grid item lg={4} md={6}>
+        <Grid item lg={4} md={6} xs={12}>
           <Review />
         </Grid>
       </Grid>
