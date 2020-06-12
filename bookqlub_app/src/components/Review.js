@@ -30,9 +30,6 @@ export const Review = (props) => {
 
 function getDate(createdDate) {
   const date = new Date(createdDate);
-  const monthName = date.toLocaleString("default", {
-    month: "long",
-  });
-
+  const monthName = date.toLocaleString("default", { month: "long" });
   return `${date.getDate()} ${monthName}`;
 }
