@@ -40,3 +40,5 @@ class Review(Base):
     value = SA.Column(SA.Enum(ReviewValue))
     comment = SA.Column(SA.String())
     created = SA.Column(SA.DateTime())
+
+    book = SA.orm.relationship("Book")
