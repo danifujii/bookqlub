@@ -39,3 +39,4 @@ class Review(Base):
     book_id = SA.Column(SA.Integer, SA.ForeignKey("books.id"), primary_key=True)
     value = SA.Column(SA.Enum(ReviewValue))
     comment = SA.Column(SA.String())
+    created = SA.Column(SA.DateTime())

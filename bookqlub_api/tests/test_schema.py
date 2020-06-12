@@ -4,6 +4,7 @@ from unittest import mock
 import unittest
 
 from alchemy_mock.mocking import UnifiedAlchemyMagicMock
+from freezegun import freeze_time
 import bcrypt
 import jwt
 
@@ -139,6 +140,21 @@ class TestLoginSchema(BaseTestSchema):
 
 
 class TestReviewSchema(BaseTestSchema):
+
+    review_mutation = """
+        mutation CreateReview (
+            $book_id: ID!, $comment: String!, $value: ReviewValue!
+        ) {
+            createReview (
+                bookId: $book_id, comment: $comment, value: $value
+            ) {
+                review {
+                    bookId
+                }
+            }
+        }
+    """
+
     def setUp(self):
         super().setUp()
         self.session.add(models.User(username="p", full_name="Peter"))
@@ -146,25 +162,12 @@ class TestReviewSchema(BaseTestSchema):
 
     def test_review_creation(self):
         # Create new review
-        mutation = """
-            mutation CreateReview (
-                $book_id: ID!, $comment: String!, $value: ReviewValue!
-            ) {
-                createReview (
-                    bookId: $book_id, comment: $comment, value: $value
-                ) {
-                    review {
-                        bookId
-                    }
-                }
-            }
-        """
         variables = {
             "book_id": 1,
             "comment": "Pretty good book",
             "value": "GOOD",
         }
-        self.graphql_request(mutation, variables, self.get_headers_with_auth())
+        self.graphql_request(self.review_mutation, variables, self.get_headers_with_auth())
 
         # Check review was saved correctly
         query = "{ reviews { comment } }"
@@ -180,3 +183,18 @@ class TestReviewSchema(BaseTestSchema):
         errors = self.graphql_request(query).get("errors")
         self.assertTrue(errors)
         self.assertEqual(errors[0].get("message"), "Invalid authentication token")
+
+    def test_review_years(self):
+        years = [2020, 2019, 2018]
+        for year in years:
+            with freeze_time(f"{year}-01-01"):
+                variables = {
+                    "book_id": 1,
+                    "comment": "Pretty good book",
+                    "value": "GOOD",
+                }
+                self.graphql_request(self.review_mutation, variables, self.get_headers_with_auth())
+
+        query = "{ reviewsYears }"
+        data = self.graphql_request(query, headers=self.get_headers_with_auth()).get("data")
+        self.assertListEqual(data.get("reviewsYears", []), years)

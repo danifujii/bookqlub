@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import lru_cache
 
 from flask import request
@@ -67,7 +68,9 @@ class CreateReview(graphene.Mutation):
     def mutate(root, info, book_id, comment, value):
         user_id = utils.validate_user_id(request, info.context["secret"])
         session = info.context["session"]
-        new_review = models.Review(user_id=user_id, book_id=book_id, value=value, comment=comment)
+        new_review = models.Review(
+            user_id=user_id, book_id=book_id, value=value, comment=comment, created=datetime.now()
+        )
         session.add(new_review)
         session.commit()
         return CreateReview(review=new_review)
