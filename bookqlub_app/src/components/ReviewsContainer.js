@@ -1,46 +1,60 @@
-import React, { useState } from "react";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import React, { useEffect, useState } from "react";
+import gql from "graphql-tag";
+import { useQuery } from "@apollo/react-hooks";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { ReviewGrid } from "./ReviewsGrid";
+import { ReviewYearSelector } from "./ReviewYearSelector";
 
-const ReviewYearSelector = (props) => {
-  const [year, setYear] = useState(props.years ? props.years[0] : undefined);
+const GET_REVIEW_YEARS = gql`
+  {
+    reviewsYears
+  }
+`;
 
-  if (!props.years) {
+export const ReviewsContainer = () => {
+  const [selectedYear, setSelectedYear] = useState(undefined);
+  const [years, setYears] = useState(undefined);
+  const { loading, error, data } = useQuery(GET_REVIEW_YEARS);
+
+  useEffect(() => {
+    const yearsData = data && data.reviewsYears;
+    if (yearsData) {
+      yearsData.sort((a, b) => b - a); // Desceding order of years
+      setSelectedYear(yearsData[0]);
+      setYears(yearsData);
+    }
+  }, [data]);
+
+  if (error) {
+    return (
+      <p className="ErrorMsg">
+        There was an error fetching your review information. Please try again
+        later.
+      </p>
+    );
+  }
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (!years) {
     return (
       <p>
-        No reviews have been found. Add some by pressing on the "Add review"
-        button.
+        No reviews have been found. Add some by pressing on the{" "}
+        <b>Add review</b> button.
       </p>
     );
   }
 
   return (
-    <FormControl variant="outlined">
-      <InputLabel id="demo-simple-select-outlined-label">Year</InputLabel>
-      <Select
-        labelId="demo-simple-select-outlined-label"
-        id="demo-simple-select-outlined"
-        value={year}
-        onChange={(e) => setYear(e.target.value)}
-        label="Year"
-      >
-        {props.years.map((year) => (
-          <MenuItem value={year}>{year}</MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
-};
-
-export const ReviewsContainer = () => {
-  return (
     <div>
       <h1 className="ReviewHeader">My reviews</h1>
-      <ReviewYearSelector />
-      <ReviewGrid />
+      {years && (
+        <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
+      )}
+      {selectedYear && <ReviewGrid year={selectedYear} />}
     </div>
   );
 };
