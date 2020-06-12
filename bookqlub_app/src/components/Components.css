@@ -138,3 +138,13 @@
     width: 50%;
     margin: 40px auto;
 }
+
+.Fab {
+    position: absolute;
+    bottom: 0;
+    right: 24px;
+}
+
+.FabIcon {
+    margin-right: 8px;
+}

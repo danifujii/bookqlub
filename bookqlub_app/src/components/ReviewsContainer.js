@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
+import { AddReviewButton } from "./AddReview";
 import { ReviewGrid } from "./ReviewsGrid";
 import { ReviewYearSelector } from "./ReviewYearSelector";
 
@@ -49,12 +50,13 @@ export const ReviewsContainer = () => {
   }
 
   return (
-    <div>
+    <div style={{ position: "relative" }}>
       <h1 className="ReviewHeader">My reviews</h1>
       {years && (
         <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
       )}
       {selectedYear && <ReviewGrid year={selectedYear} />}
+      <AddReviewButton />
     </div>
   );
 };
