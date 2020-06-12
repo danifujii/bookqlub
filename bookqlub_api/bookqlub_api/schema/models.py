@@ -23,6 +23,7 @@ class Book(Base):
     title = SA.Column(SA.String)
     author = SA.Column(SA.String)
     release_date = SA.Column(SA.DateTime)
+    cover_url = SA.Column(SA.String)
 
 
 class ReviewValue(enum.Enum):
@@ -38,7 +39,7 @@ class Review(Base):
     user_id = SA.Column(SA.Integer, SA.ForeignKey("users.id"), primary_key=True)
     book_id = SA.Column(SA.Integer, SA.ForeignKey("books.id"), primary_key=True)
     value = SA.Column(SA.Enum(ReviewValue))
-    comment = SA.Column(SA.String())
-    created = SA.Column(SA.DateTime())
+    comment = SA.Column(SA.String)
+    created = SA.Column(SA.DateTime)
 
     book = SA.orm.relationship("Book")

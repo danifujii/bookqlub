@@ -17,4 +17,4 @@ class Book(graphene_sqlalchemy.SQLAlchemyObjectType):
 class Review(graphene_sqlalchemy.SQLAlchemyObjectType):
     class Meta:
         model = models.Review
-        exclude_fields = ("book_id", "user_id")
+        exclude_fields = ("user_id",)
