@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import { ReviewGrid } from "./ReviewsGrid";
 import { ReviewYearSelector } from "./ReviewYearSelector";
@@ -36,7 +36,7 @@ export const ReviewsContainer = () => {
   }
 
   if (loading) {
-    return <CircularProgress />;
+    return <LinearProgress className="ReviewLoading" />;
   }
 
   if (!years) {
