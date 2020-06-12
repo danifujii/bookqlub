@@ -9,7 +9,8 @@ CREATE TABLE books (
     id              SERIAL  PRIMARY KEY,
     title           VARCHAR NOT NULL,
     author          VARCHAR NOT NULL,
-    release_date    TIMESTAMP WITHOUT TIME ZONE NOT NULL
+    release_date    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    cover_url       VARCHAR
 );
 
 CREATE TYPE review AS ENUM ('EXCELLENT', 'GREAT', 'GOOD', 'OK');
