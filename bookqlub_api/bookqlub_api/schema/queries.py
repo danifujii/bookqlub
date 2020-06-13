@@ -7,6 +7,7 @@ from bookqlub_api.schema import models, types, utils
 
 class Query(graphene.ObjectType):
     books = graphene.List(types.Book)
+    books_by_title = graphene.Field(graphene.List(types.Book), title=graphene.String(required=True))
     user = graphene.Field(types.User)
     reviews = graphene.Field(graphene.List(types.Review), year=graphene.Int())
     reviews_years = graphene.List(graphene.Int)
@@ -14,6 +15,11 @@ class Query(graphene.ObjectType):
     def resolve_books(self, info):
         _ = utils.validate_user_id(request, info.context["secret"])
         return types.Book.get_query(info).all()
+
+    def resolve_books_by_title(self, info, title):
+        _ = utils.validate_user_id(request, info.context["secret"])
+        query = types.Book.get_query(info).filter(models.Book.title.like(f"%{title}%"))
+        return query.all()
 
     def resolve_user(self, info):
         user_id = utils.validate_user_id(request, info.context["secret"])
