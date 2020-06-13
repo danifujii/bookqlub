@@ -140,9 +140,9 @@
 }
 
 .Fab {
-    position: absolute;
-    bottom: 0;
-    right: 24px;
+    position: fixed;
+    bottom: 36px;
+    right: 36px;
 }
 
 .FabIcon {
