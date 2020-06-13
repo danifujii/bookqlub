@@ -59,7 +59,6 @@ class Login(graphene.Mutation):
 class CreateReview(graphene.Mutation):
     class Arguments:
         book_id = graphene.ID()
-        user_id = graphene.ID()
         comment = graphene.String()
         value = graphene.Enum.from_enum(models.ReviewValue)()
 
