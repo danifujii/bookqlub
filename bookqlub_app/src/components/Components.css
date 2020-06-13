@@ -178,6 +178,11 @@
 
 .AddReviewButtons {
     margin: 24px 0;
+    float: right;
+}
+
+.AddReviewLoading {
+    margin-right: 24px;
 }
 
 .AddReviewCoverContainer p {

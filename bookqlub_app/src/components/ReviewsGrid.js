@@ -22,6 +22,7 @@ const GET_REVIEWS = gql`
 export const ReviewGrid = (props) => {
   const { loading, error, data } = useQuery(GET_REVIEWS, {
     variables: { year: props.year },
+    fetchPolicy: "cache-and-network",
   });
   const [reviewsPerMonth, setReviewsPerMonth] = useState(undefined);
 

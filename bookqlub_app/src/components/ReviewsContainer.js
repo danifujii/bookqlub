@@ -16,7 +16,9 @@ const GET_REVIEW_YEARS = gql`
 export const ReviewsContainer = () => {
   const [selectedYear, setSelectedYear] = useState(undefined);
   const [years, setYears] = useState(undefined);
-  const { loading, error, data } = useQuery(GET_REVIEW_YEARS);
+  const { loading, error, data, refetch } = useQuery(GET_REVIEW_YEARS, {
+    fetchPolicy: "cache-and-network", // So that refetch go to server
+  });
 
   useEffect(() => {
     const yearsData = data && data.reviewsYears;
@@ -56,7 +58,7 @@ export const ReviewsContainer = () => {
         <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
       )}
       {selectedYear && <ReviewGrid year={selectedYear} />}
-      <AddReviewButton />
+      <AddReviewButton onSubmit={() => refetch()} />
     </div>
   );
 };

@@ -15,7 +15,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { CircularProgress, TextField } from "@material-ui/core";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import _ from "lodash";
 
 const REVIEW_VALUES = ["Excellent", "Great", "Good", "Ok"];
@@ -25,11 +25,26 @@ const GET_BOOKS = gql`
     booksByTitle(title: $title) {
       id
       title
+      coverUrl
     }
   }
 `;
 
-export const AddReviewButton = () => {
+const ADD_REVIEW = gql`
+  mutation CreateReview(
+    $book_id: ID!
+    $comment: String!
+    $value: ReviewValue!
+  ) {
+    createReview(bookId: $book_id, comment: $comment, value: $value) {
+      review {
+        bookId
+      }
+    }
+  }
+`;
+
+export const AddReviewButton = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <div className="Fab">
@@ -47,47 +62,86 @@ export const AddReviewButton = () => {
         open={modalOpen}
         maxWidth="md"
       >
-        <AddReviewModalBody />
+        <AddReviewModalBody
+          closeDialog={() => setModalOpen(false)}
+          {...props}
+        />
       </Dialog>
     </div>
   );
 };
 
 const AddReviewModalBody = (props) => {
-  const { imageUrl } = props;
+  const [selectedBook, setSelectedBook] = useState(undefined);
+
   return (
     <div className="AddReviewModalContainer">
       <div className="AddReviewCoverContainer">
-        {imageUrl ? (
-          <img src={imageUrl} alt="Book cover" className="AddReviewCover" />
+        {selectedBook ? (
+          <img
+            src={selectedBook.coverUrl}
+            alt="Book cover"
+            className="AddReviewCover"
+          />
         ) : (
           <p>Book cover</p>
         )}
       </div>
-      <AddReviewModalForm />
+      <AddReviewModalForm onSetBook={setSelectedBook} {...props} />
     </div>
   );
 };
 
-const AddReviewModalForm = () => {
-  const [title, setTitle] = useState(undefined);
+const AddReviewModalForm = (props) => {
+  const [book, setBook] = useState(undefined);
+  const [value, setValue] = useState(REVIEW_VALUES[0]);
   const [reviewDate, setReviewDate] = useState(new Date());
+  const [comment, setComment] = useState("");
 
   const [titleOpen, setTitleOpen] = useState(false);
+  const [formError, setFormError] = useState(undefined);
 
   const [getBooks, { loading, error, data }] = useLazyQuery(GET_BOOKS);
+  const [
+    addReview,
+    { loading: onAddingReview, error: addReviewError },
+  ] = useMutation(ADD_REVIEW);
+
+  const onSetBook = (_, book) => {
+    setBook(book);
+    if (props.onSetBook) {
+      props.onSetBook(book);
+    }
+  };
 
   const handleUserInput = (event) => {
     event.persist();
     queryBooks(event);
   };
-
   const queryBooks = _.debounce((event) => {
     const titleQuery = event.target.value;
     if (titleQuery) {
       getBooks({ variables: { title: titleQuery } });
     }
   }, 500);
+
+  const handleSubmit = (_) => {
+    if (book) {
+      setFormError(undefined);
+      addReview({
+        variables: {
+          book_id: book.id,
+          comment: comment,
+          value: value.toUpperCase(),
+        },
+      })
+        .then(() => {
+          props.closeDialog();
+          props.onSubmit();
+        })
+        .catch((e) => console.log(e));
+    } else setFormError("No book selected for this review");
+  };
 
   return (
     <div className="AddReviewContentContainer">
@@ -99,7 +153,7 @@ const AddReviewModalForm = () => {
         fullWidth
         onOpen={() => setTitleOpen(true)}
         onClose={() => setTitleOpen(false)}
-        onChange={(_, value) => setTitle(value)}
+        onChange={onSetBook}
         getOptionLabel={(option) => option.title}
         options={(data && data.booksByTitle) || []}
         loading={loading}
@@ -123,7 +177,12 @@ const AddReviewModalForm = () => {
       />
 
       <h3 className="AddReviewSubtitle">Value</h3>
-      <Select fullWidth placeholder="Value" value={REVIEW_VALUES[0]}>
+      <Select
+        fullWidth
+        placeholder="Value"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      >
         {REVIEW_VALUES.map((value) => (
           <MenuItem value={value} key={value}>
             {value}
@@ -150,15 +209,35 @@ const AddReviewModalForm = () => {
       </MuiPickersUtilsProvider>
 
       <h3 className="AddReviewSubtitle">Comment</h3>
-      <Input placeholder="Review comments" fullWidth multiline rows={3} />
+      <Input
+        placeholder="Review comments"
+        fullWidth
+        multiline
+        rows={3}
+        onChange={(e) => setComment(e.target.value)}
+      />
+
+      {(formError || error || addReviewError) && (
+        <p className="ErrorMsg">
+          {formError ||
+            (error && error.message) ||
+            (addReviewError && addReviewError.message)}
+        </p>
+      )}
 
       <div className="AddReviewButtons">
-        <DialogActions>
-          <Button color="primary">Cancel</Button>
-          <Button variant="contained" color="primary">
-            Add review
-          </Button>
-        </DialogActions>
+        {onAddingReview ? (
+          <CircularProgress className="AddReviewLoading" />
+        ) : (
+          <DialogActions>
+            <Button color="primary" onClick={() => props.closeDialog()}>
+              Cancel
+            </Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Add review
+            </Button>
+          </DialogActions>
+        )}
       </div>
     </div>
   );
