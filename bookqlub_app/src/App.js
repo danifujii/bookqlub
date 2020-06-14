@@ -24,7 +24,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: process.env.BOOKQLUB_API_URL || "http://127.0.0.1:5001/graphql",
+  uri: process.env.REACT_APP_BOOKQLUB_API_URL,
 });
 
 const client = new ApolloClient({
