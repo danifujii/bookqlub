@@ -14,7 +14,12 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import { CircularProgress, TextField } from "@material-ui/core";
+import {
+  CircularProgress,
+  TextField,
+  useTheme,
+  useMediaQuery,
+} from "@material-ui/core";
 import { useLazyQuery, useMutation } from "@apollo/react-hooks";
 import _ from "lodash";
 
@@ -46,6 +51,9 @@ const ADD_REVIEW = gql`
 
 export const AddReviewButton = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const theme = useTheme();
+  const smallDevice = useMediaQuery(theme.breakpoints.down("xs"));
+
   return (
     <div className="Fab">
       <Fab
@@ -61,6 +69,7 @@ export const AddReviewButton = (props) => {
         onClose={() => setModalOpen(false)}
         open={modalOpen}
         maxWidth="md"
+        fullScreen={smallDevice}
       >
         <AddReviewModalBody
           closeDialog={() => setModalOpen(false)}
@@ -73,20 +82,24 @@ export const AddReviewButton = (props) => {
 
 const AddReviewModalBody = (props) => {
   const [selectedBook, setSelectedBook] = useState(undefined);
+  const theme = useTheme();
+  const bigDevice = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <div className="AddReviewModalContainer">
-      <div className="AddReviewCoverContainer">
-        {selectedBook ? (
-          <img
-            src={selectedBook.coverUrl}
-            alt="Book cover"
-            className="AddReviewCover"
-          />
-        ) : (
-          <p>Book cover</p>
-        )}
-      </div>
+      {bigDevice && (
+        <div className="AddReviewCoverContainer">
+          {selectedBook ? (
+            <img
+              src={selectedBook.coverUrl}
+              alt="Book cover"
+              className="AddReviewCover"
+            />
+          ) : (
+            <p>Book cover</p>
+          )}
+        </div>
+      )}
       <AddReviewModalForm onSetBook={setSelectedBook} {...props} />
     </div>
   );

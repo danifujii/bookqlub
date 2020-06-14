@@ -1,9 +1,11 @@
 import React, { useState, useContext } from "react";
+import { useTheme } from "@material-ui/core/styles";
 
 import { UserContext } from "../App";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 import { WelcomeMsg } from "../components/WelcomeMsg";
+import { useMediaQuery } from "@material-ui/core";
 
 const onUser = (data, setUsername) => {
   localStorage.setItem("token", data.token);
@@ -11,17 +13,21 @@ const onUser = (data, setUsername) => {
   setUsername(data.user.username);
 };
 
-export const Login = (props) => {
+export const Login = () => {
   const [onLogin, setOnLogin] = useState(true);
   const { setUsername } = useContext(UserContext);
+  const theme = useTheme();
+  const bigDevice = useMediaQuery(theme.breakpoints.up("lg"));
 
   return (
     <div className="LoginWrapper">
-      <div className="LoginContainer LoginWelcomeContainer">
-        <div className="LoginContainerContent">
-          <WelcomeMsg />
+      {bigDevice && (
+        <div className="LoginContainer LoginWelcomeContainer">
+          <div className="LoginContainerContent">
+            <WelcomeMsg />
+          </div>
         </div>
-      </div>
+      )}
       <div className="LoginContainer">
         <div className="LoginContainerContent">
           <h1 className="LoginHeader">Bookqlub</h1>
