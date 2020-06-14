@@ -17,3 +17,17 @@
     position: relative;
     top: 30%;
 }
+
+.LoginLogoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-bottom: 16px;
+}
+
+.LoginLogo {
+    width: 64px;
+    height: 64px;
+    display: inline-block;
+}

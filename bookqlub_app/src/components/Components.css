@@ -23,7 +23,8 @@
 .LoginHeader {
     font-family: 'Public Sans';
     font-weight: 900;
-    margin: 0;
+    margin: 0 16px;
+    display: inline-flex;
 }
 
 .LoginSubheader {
