@@ -1,9 +1,9 @@
-INSERT INTO users(full_name, username)
+INSERT INTO users(full_name, username, password)
 VALUES
-    ('Daniel', 'danifu'),
-    ('Matt', 'matthew');
+    ('Daniel', 'danifu', ''),
+    ('Matt', 'matthew', '');
 
-INSERT INTO books(title, author, release_date)
+INSERT INTO books(title, author, release_date, cover_url)
 VALUES
     ('Brave new world', 'Aldous Huxley', '1932-01-01', 'brave_new_world.jpg'),
     ('The catcher in the rye', 'J. D. Salinger', '1951-07-16', 'the_catcher_in_the_rye.jpg'),

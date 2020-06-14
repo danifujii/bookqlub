@@ -10,7 +10,8 @@ CREATE TABLE books (
     title           VARCHAR NOT NULL,
     author          VARCHAR NOT NULL,
     release_date    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    cover_url       VARCHAR
+    cover_url       VARCHAR,
+    title_tsv       TSVECTOR
 );
 
 CREATE TYPE review AS ENUM ('EXCELLENT', 'GREAT', 'GOOD', 'OK');
@@ -25,3 +26,10 @@ CREATE TABLE reviews (
     FOREIGN KEY (book_id) REFERENCES books (id),
     PRIMARY KEY(user_id, book_id)
 );
+
+CREATE TRIGGER tsvectorupdate
+    BEFORE INSERT OR UPDATE
+    ON books FOR EACH ROW
+    EXECUTE PROCEDURE tsvector_update_trigger(title_tsv, 'pg_catalog.english', title);
+
+CREATE INDEX books_tsv_index ON books USING GIST (title_tsv);
