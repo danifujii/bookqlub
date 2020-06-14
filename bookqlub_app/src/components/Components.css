@@ -73,6 +73,14 @@
     margin: 20px auto 0;
 }
 
+.HeaderContainer {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background-color: rgba(252, 234, 222, .4);
+    backdrop-filter: blur(50px);
+}
+
 .HeaderContent {
     color: #EE6C4D;
     font-size: 1.9em;
