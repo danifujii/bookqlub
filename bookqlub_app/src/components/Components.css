@@ -79,18 +79,37 @@
     top: 0;
     background-color: rgba(252, 234, 222, .4);
     backdrop-filter: blur(50px);
+
 }
 
 .HeaderContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: row;
+}
+
+.HeaderTitle {
+    display: inline-flex;
     color: #EE6C4D;
     font-size: 1.9em;
-    text-align: center;
     padding: 16px 0;
 }
 
 .HeaderDivider {
     height: 3px;
     background-color: #E7AD99;
+}
+
+.HeaderButton {
+    position: absolute !important;
+    right: 0;
+    color: #FFF;
+}
+
+.HeaderButtonIcon {
+    color: #E69A81;
 }
 
 .ReviewHeader {
