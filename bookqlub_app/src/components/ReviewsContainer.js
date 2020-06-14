@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import _ from "lodash";
 
 import { AddReviewButton } from "./AddReview";
 import { ReviewGrid } from "./ReviewsGrid";
@@ -22,7 +23,7 @@ export const ReviewsContainer = () => {
 
   useEffect(() => {
     const yearsData = data && data.reviewsYears;
-    if (yearsData) {
+    if (yearsData && !_.isEmpty(yearsData)) {
       yearsData.sort((a, b) => b - a); // Desceding order of years
       setSelectedYear(yearsData[0]);
       setYears(yearsData);
@@ -42,20 +43,16 @@ export const ReviewsContainer = () => {
     return <LinearProgress className="ReviewLoading" />;
   }
 
-  if (!years) {
-    return (
-      <p>
-        No reviews have been found. Add some by pressing on the{" "}
-        <b>Add review</b> button.
-      </p>
-    );
-  }
-
   return (
     <div style={{ marginBottom: "24px" }}>
       <h1 className="ReviewHeader">My reviews</h1>
-      {years && (
+      {years && !_.isEmpty(years) ? (
         <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
+      ) : (
+        <p>
+          No reviews have been found. Add some by pressing on the{" "}
+          <b>Add review</b> button.
+        </p>
       )}
       {selectedYear && <ReviewGrid year={selectedYear} />}
       <AddReviewButton onSubmit={() => refetch()} />
