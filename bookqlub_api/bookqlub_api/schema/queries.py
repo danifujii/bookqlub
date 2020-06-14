@@ -10,7 +10,11 @@ SEARCH_LIMIT = 50
 
 class Query(graphene.ObjectType):
     books = graphene.List(types.Book)
-    books_by_title = graphene.Field(graphene.List(types.Book), title=graphene.String(required=True))
+    books_by_title = graphene.Field(
+        graphene.List(types.Book),
+        title=graphene.String(required=True),
+        already_reviewed=graphene.Boolean(),
+    )
     user = graphene.Field(types.User)
     reviews = graphene.Field(graphene.List(types.Review), year=graphene.Int())
     reviews_years = graphene.List(graphene.Int)
@@ -19,19 +23,16 @@ class Query(graphene.ObjectType):
         _ = utils.validate_user_id(request, info.context["secret"])
         return types.Book.get_query(info).all()
 
-    def resolve_books_by_title(self, info, title):
+    def resolve_books_by_title(self, info, title, already_reviewed=False):
         user_id = utils.validate_user_id(request, info.context["secret"])
         session = info.context["session"]
         reviewed_books_ids = (
             session.query(models.Review.book_id).filter(models.Review.user_id == user_id).subquery()
         )
-        return (
-            types.Book.get_query(info)
-            .filter(models.Book.title.like(f"%{title}%"))
-            .filter(models.Book.id.notin_(reviewed_books_ids))
-            .limit(SEARCH_LIMIT)
-            .all()
-        )
+        books_query = types.Book.get_query(info).filter(models.Book.title.like(f"%{title}%"))
+        if not already_reviewed:
+            books_query = books_query.filter(models.Book.id.notin_(reviewed_books_ids))
+        return books_query.limit(SEARCH_LIMIT).all()
 
     def resolve_user(self, info):
         user_id = utils.validate_user_id(request, info.context["secret"])
@@ -46,10 +47,11 @@ class Query(graphene.ObjectType):
 
     def resolve_reviews_years(self, info):
         user_id = utils.validate_user_id(request, info.context["secret"])
-        reviews = (
-            types.Review.get_query(info)
+        session = info.context["session"]
+        result = (
+            session.query(SA.extract("year", models.Review.created))
             .filter(models.Review.user_id == user_id)
-            .distinct(SA.extract("year", models.Review.created))
+            .distinct()
             .all()
         )
-        return [review.created.year for review in reviews]
+        return [res_tuple[0] for res_tuple in result]
