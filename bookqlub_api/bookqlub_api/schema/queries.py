@@ -5,6 +5,9 @@ import sqlalchemy as SA
 from bookqlub_api.schema import models, types, utils
 
 
+SEARCH_LIMIT = 50
+
+
 class Query(graphene.ObjectType):
     books = graphene.List(types.Book)
     books_by_title = graphene.Field(graphene.List(types.Book), title=graphene.String(required=True))
@@ -18,8 +21,12 @@ class Query(graphene.ObjectType):
 
     def resolve_books_by_title(self, info, title):
         _ = utils.validate_user_id(request, info.context["secret"])
-        query = types.Book.get_query(info).filter(models.Book.title.like(f"%{title}%"))
-        return query.all()
+        return (
+            types.Book.get_query(info)
+            .filter(models.Book.title.like(f"%{title}%"))
+            .limit(SEARCH_LIMIT)
+            .all()
+        )
 
     def resolve_user(self, info):
         user_id = utils.validate_user_id(request, info.context["secret"])
