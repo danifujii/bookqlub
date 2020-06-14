@@ -20,10 +20,15 @@ class Query(graphene.ObjectType):
         return types.Book.get_query(info).all()
 
     def resolve_books_by_title(self, info, title):
-        _ = utils.validate_user_id(request, info.context["secret"])
+        user_id = utils.validate_user_id(request, info.context["secret"])
+        session = info.context["session"]
+        reviewed_books_ids = (
+            session.query(models.Review.book_id).filter(models.Review.user_id == user_id).subquery()
+        )
         return (
             types.Book.get_query(info)
             .filter(models.Book.title.like(f"%{title}%"))
+            .filter(models.Book.id.notin_(reviewed_books_ids))
             .limit(SEARCH_LIMIT)
             .all()
         )
