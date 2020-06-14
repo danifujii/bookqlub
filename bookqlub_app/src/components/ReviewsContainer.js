@@ -52,7 +52,7 @@ export const ReviewsContainer = () => {
   }
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ marginBottom: "24px" }}>
       <h1 className="ReviewHeader">My reviews</h1>
       {years && (
         <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
