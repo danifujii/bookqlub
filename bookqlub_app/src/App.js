@@ -40,16 +40,24 @@ const theme = createMuiTheme({
   },
 });
 
+export const UserContext = React.createContext({
+  username: localStorage.getItem("username"),
+  setUsername: () => {},
+});
+
 function App() {
   const [username, setUsername] = useState(localStorage.getItem("username"));
+  const value = { username, setUsername };
 
   return (
     <div style={{ height: "100%" }}>
-      <ApolloProvider client={client}>
-        <ThemeProvider theme={theme}>
-          {username ? <Homepage /> : <Login setUsername={setUsername} />}
-        </ThemeProvider>
-      </ApolloProvider>
+      <UserContext.Provider value={value}>
+        <ApolloProvider client={client}>
+          <ThemeProvider theme={theme}>
+            {username ? <Homepage /> : <Login />}
+          </ThemeProvider>
+        </ApolloProvider>
+      </UserContext.Provider>
     </div>
   );
 }

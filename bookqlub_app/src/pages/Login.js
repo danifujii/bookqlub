@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
+import { UserContext } from "../App";
 import { LoginForm } from "../components/LoginForm";
 import { RegisterForm } from "../components/RegisterForm";
 import { WelcomeMsg } from "../components/WelcomeMsg";
@@ -12,6 +13,7 @@ const onUser = (data, setUsername) => {
 
 export const Login = (props) => {
   const [onLogin, setOnLogin] = useState(true);
+  const { setUsername } = useContext(UserContext);
 
   return (
     <div className="LoginWrapper">
@@ -29,12 +31,12 @@ export const Login = (props) => {
           {onLogin ? (
             <LoginForm
               onRegister={() => setOnLogin(false)}
-              onUser={(ud) => onUser(ud, props.setUsername)}
+              onUser={(ud) => onUser(ud, setUsername)}
             />
           ) : (
             <RegisterForm
               onLogin={() => setOnLogin(true)}
-              onUser={(ud) => onUser(ud, props.setUsername)}
+              onUser={(ud) => onUser(ud, setUsername)}
             />
           )}
         </div>
