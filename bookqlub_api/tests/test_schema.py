@@ -13,16 +13,24 @@ from bookqlub_api.schema import models, utils as schema_utils
 
 
 class BaseTestSchema(unittest.TestCase):
+
+    demo_user_id = -2
+
     def setUp(self):
         if not hasattr(self, "session"):  # If children test hasn't already defined a session
             self.session = UnifiedAlchemyMagicMock()
         self.client = application.create_app(self.session).test_client()
+
+        self.og_demo_user_ids = utils.config["app"]["demo_user_ids"]
+        utils.config["app"]["demo_user_ids"].append(self.demo_user_id)
 
         self.addCleanup(self.cleanUp)
 
     def cleanUp(self):
         self.session.rollback()
         self.session.close()
+
+        utils.config["app"]["demo_user_ids"] = self.og_demo_user_ids
 
     def graphql_request(self, query: str, variables: dict = None, headers: dict = None) -> dict:
         request_body = {"query": query}
@@ -177,6 +185,18 @@ class TestReviewSchema(BaseTestSchema):
         reviews = resp_data.get("reviews")
         self.assertTrue(reviews)
         self.assertEqual(reviews[0].get("comment"), variables["comment"])
+
+    def test_review_creation_demo_user(self):
+        variables = {
+            "book_id": 1,
+            "comment": "Pretty good book",
+            "value": "GOOD",
+        }
+        errors = self.graphql_request(
+            self.review_mutation, variables, self.get_headers_with_auth(user_id=self.demo_user_id)
+        ).get("errors")
+        self.assertTrue(errors)
+        self.assertIn("Invalid action", errors[0].get("message"))
 
     def test_reviews_unauthorized(self):
         query = "{ reviews(year: 2020) { comment } }"

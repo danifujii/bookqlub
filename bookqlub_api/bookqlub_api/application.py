@@ -6,7 +6,11 @@ from bookqlub_api.schema import schema
 
 
 def create_app(session) -> Flask:
-    graphql_context = {"session": session, "secret": utils.config["app"]["secret"]}
+    graphql_context = {
+        "session": session,
+        "secret": utils.config["app"]["secret"],
+        "demo_user_ids": frozenset(utils.config["app"]["demo_user_ids"]),
+    }
 
     app = Flask(__name__)
     app.add_url_rule(
