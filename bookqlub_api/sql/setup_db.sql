@@ -9,7 +9,7 @@ CREATE TABLE books (
     id              SERIAL  PRIMARY KEY,
     title           VARCHAR NOT NULL,
     author          VARCHAR NOT NULL,
-    release_date    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    release_date    TIMESTAMP WITHOUT TIME ZONE,
     cover_url       VARCHAR,
     title_tsv       TSVECTOR
 );

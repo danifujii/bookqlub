@@ -9,7 +9,7 @@ export const Review = (props) => {
         <img
           src={review.book.coverUrl}
           alt={`${review.book.title} cover`}
-          height="250px"
+          height="200px"
         />
       </div>
 

@@ -71,36 +71,11 @@ export const AddReviewButton = (props) => {
         maxWidth="md"
         fullScreen={smallDevice}
       >
-        <AddReviewModalBody
+        <AddReviewModalForm
           closeDialog={() => setModalOpen(false)}
           {...props}
         />
       </Dialog>
-    </div>
-  );
-};
-
-const AddReviewModalBody = (props) => {
-  const [selectedBook, setSelectedBook] = useState(undefined);
-  const theme = useTheme();
-  const bigDevice = useMediaQuery(theme.breakpoints.up("md"));
-
-  return (
-    <div className="AddReviewModalContainer">
-      {bigDevice && (
-        <div className="AddReviewCoverContainer">
-          {selectedBook ? (
-            <img
-              src={selectedBook.coverUrl}
-              alt="Book cover"
-              className="AddReviewCover"
-            />
-          ) : (
-            <p>Book cover</p>
-          )}
-        </div>
-      )}
-      <AddReviewModalForm onSetBook={setSelectedBook} {...props} />
     </div>
   );
 };
@@ -122,9 +97,6 @@ const AddReviewModalForm = (props) => {
 
   const onSetBook = (_, book) => {
     setBook(book);
-    if (props.onSetBook) {
-      props.onSetBook(book);
-    }
   };
 
   const handleUserInput = (event) => {
