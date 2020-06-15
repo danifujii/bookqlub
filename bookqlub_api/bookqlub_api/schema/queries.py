@@ -48,12 +48,10 @@ class Query(graphene.ObjectType):
 
     def resolve_reviews_years(self, info):
         user_id = utils.validate_user_id(request, info.context["secret"])
-        session = info.context["session"]
-
-        result = (
-            session.query(SA.extract("year", models.Review.created))
+        reviews = (
+            types.Review.get_query(info)
             .filter(models.Review.user_id == user_id)
-            .distinct()
+            .distinct(SA.extract("year", models.Review.created))
             .all()
         )
-        return [res_tuple[0] for res_tuple in result]
+        return [review.created.year for review in reviews]
