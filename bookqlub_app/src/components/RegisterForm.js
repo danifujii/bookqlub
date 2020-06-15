@@ -7,8 +7,12 @@ import { OrDivider } from "./OrDivider";
 import { onMutation } from "./FormUtils";
 
 const REGISTER = gql`
-  mutation CreateUser($full_name: String!, $username: String!, $pass: String!) {
-    createUser(fullName: $full_name, username: $username, password: $pass) {
+  mutation CreateUser(
+    $full_name: String!
+    $username: String!
+    $password: String!
+  ) {
+    createUser(fullName: $full_name, username: $username, password: $password) {
       user {
         username
       }
@@ -21,7 +25,7 @@ export const RegisterForm = (props) => {
   const { onLogin } = props;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [fullname, setFullname] = useState("");
+  const [full_name, setFullname] = useState("");
   const [inputError, setInputError] = useState(undefined);
   const [register, { data, loading, error }] = useMutation(REGISTER);
 
@@ -78,7 +82,7 @@ export const RegisterForm = (props) => {
                 onClick={() =>
                   onMutation(
                     register,
-                    { fullname, username, password },
+                    { full_name, username, password },
                     setInputError
                   )
                 }
