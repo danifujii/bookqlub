@@ -29,6 +29,17 @@ const LoginFormFields = (props) => {
     }
   }, [data]);
 
+  const loginDemoUser = () => {
+    onMutation(
+      login,
+      {
+        username: process.env.REACT_APP_BOOKQLUB_DEMO_USERNAME,
+        password: process.env.REACT_APP_BOOKQLUB_DEMO_PASSWORD,
+      },
+      setInputError
+    );
+  };
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -59,16 +70,27 @@ const LoginFormFields = (props) => {
         {loading ? (
           <CircularProgress />
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={(_) =>
-              onMutation(login, { username, password }, setInputError)
-            }
-          >
-            Login
-          </Button>
+          <div>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={(_) =>
+                onMutation(login, { username, password }, setInputError)
+              }
+            >
+              Login
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="large"
+              style={{ marginLeft: 16 }}
+              onClick={loginDemoUser}
+            >
+              Demo
+            </Button>
+          </div>
         )}
       </Grid>
     </Grid>
