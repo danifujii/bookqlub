@@ -5,17 +5,15 @@
 
 .LoginContainer {
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex: 1;
     padding: 1rem;
 }
 
 .LoginWelcomeContainer {
     background: #EE6C4D;
-}
-
-.LoginContainerContent {
-    position: relative;
-    top: 30%;
 }
 
 .LoginLogoContainer {
