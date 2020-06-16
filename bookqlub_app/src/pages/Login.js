@@ -24,9 +24,7 @@ export const Login = () => {
     <div className="LoginWrapper">
       {bigDevice && (
         <div className="LoginContainer LoginWelcomeContainer">
-          <div className="LoginContainerContent">
-            <WelcomeMsg />
-          </div>
+          <WelcomeMsg />
         </div>
       )}
       <div className="LoginContainer">
