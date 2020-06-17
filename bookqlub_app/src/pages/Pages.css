@@ -24,6 +24,10 @@
     margin-bottom: 16px;
 }
 
+.LoginContainerContent {
+    flex: 1;
+}
+
 .LoginLogo {
     width: 64px;
     height: 64px;
