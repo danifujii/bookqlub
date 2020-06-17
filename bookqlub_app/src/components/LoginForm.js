@@ -44,6 +44,7 @@ const LoginFormFields = (props) => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <TextField
+          id="username-input"
           label="Username"
           variant="outlined"
           className="LoginInput"
@@ -52,6 +53,7 @@ const LoginFormFields = (props) => {
       </Grid>
       <Grid item xs={12}>
         <TextField
+          id="password-input"
           label="Password"
           variant="outlined"
           type="password"

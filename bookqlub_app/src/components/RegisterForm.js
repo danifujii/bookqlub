@@ -41,6 +41,7 @@ export const RegisterForm = (props) => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
+              id="fullname-input"
               label="Full name"
               variant="outlined"
               className="LoginInput"
@@ -49,6 +50,7 @@ export const RegisterForm = (props) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              id="username-input"
               label="Username"
               variant="outlined"
               className="LoginInput"
@@ -57,6 +59,7 @@ export const RegisterForm = (props) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              id="password-input"
               label="Password"
               variant="outlined"
               type="password"
