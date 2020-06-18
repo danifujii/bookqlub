@@ -25,6 +25,10 @@ def create_app(session) -> Flask:
     return app
 
 
+def get_app(*args, **kwargs):
+    return create_app(utils.get_db_session())
+
+
 if __name__ == "__main__":
-    app = create_app(utils.get_db_session())
+    app = get_app()
     app.run(port=utils.config["app"]["port"])
