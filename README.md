@@ -1,4 +1,4 @@
-<a href="https://bookqlub.com/"><img src="logo.png" height=64 alt="Bookqlub"/></a> 
+<a href="https://bookqlub.com/"><img src="logo.png" height=77 alt="Bookqlub"/></a> 
 
 ## [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/danifujii/bookqlub/blob/master/LICENSE) [![Version](https://img.shields.io/github/v/release/danifujii/bookqlub)](https://github.com/danifujii/bookqlub/releases) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/danifujii/bookqlub/tree/master/bookqlub_api#contributing)
 
