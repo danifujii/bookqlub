@@ -16,6 +16,8 @@ The application consists of two parts:
 I used all functional components in the web application, taking full advantage of [React hooks](https://reactjs.org/docs/hooks-intro.html).
 For authentication between the application and the server, I used [JSON Web Tokens (JWT)](https://jwt.io/).
 
+<img src="technologies.png" alt="Used technologies" />
+
 ## Setup
 
 If you would like to setup the API, follow [these instructions](https://github.com/danifujii/bookqlub/tree/master/bookqlub_api#setup).
