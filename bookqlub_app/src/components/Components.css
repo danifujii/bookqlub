@@ -188,7 +188,6 @@
 .AddReviewContentContainer {
     flex: 3;
     margin: auto 24px;
-    min-width: 500px;
 }
 
 .AddReviewSubtitle {
