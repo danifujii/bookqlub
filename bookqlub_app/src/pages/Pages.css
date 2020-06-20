@@ -33,3 +33,14 @@
     height: 64px;
     display: inline-block;
 }
+
+.HomepageContainer {
+    min-height: 100%;
+    position: relative;
+}
+
+.HomepageContainer::after {
+    content: '';
+    display: block;
+    height: 50px;
+}
