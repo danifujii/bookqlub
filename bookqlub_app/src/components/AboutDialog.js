@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -11,7 +11,7 @@ export const AboutDialog = (props) => {
 
   return (
     <div>
-      <Dialog open={open}>
+      <Dialog open={open} onClose={onClose}>
         <DialogTitle>About Bookqlub</DialogTitle>
         <DialogContent>
           <DialogContentText>

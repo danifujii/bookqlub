@@ -14,10 +14,22 @@
     font-weight: 800;
 }
 
+.WelcomeSubheaderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .WelcomeSubheader {
+    display: inline;
     font-size: 1.6em;
     color: whitesmoke;
     opacity: 0.9;
+    margin: 0 8px;
+}
+
+.WelcomeSubheaderButton {
+    color: #FCEADE;
 }
 
 .LoginHeader {
