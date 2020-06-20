@@ -7,7 +7,7 @@ _Bookqlub_ is a minimalistic, simple to use book review site, built to gain expe
 ## Structure
 
 The application consists of two parts:
-  - Web server that exposes a [GraphQL API](https://graphql.org/learn/). Build with [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+  - Web server that exposes a [GraphQL API](https://graphql.org/learn/). Built with [Flask](https://flask.palletsprojects.com/en/1.1.x/)
     and used [Graphene](https://graphene-python.org/) for the GraphQL integration.
   - Web application built with [React](https://reactjs.org/). 
     Used [Apollo Client](https://www.apollographql.com/docs/) for the GraphQL integration and 
@@ -15,6 +15,8 @@ The application consists of two parts:
 
 I used all functional components in the web application, taking full advantage of [React hooks](https://reactjs.org/docs/hooks-intro.html).
 For authentication between the application and the server, I used [JSON Web Tokens (JWT)](https://jwt.io/).
+
+<img src="technologies.png" alt="Used technologies" />
 
 ## Setup
 
