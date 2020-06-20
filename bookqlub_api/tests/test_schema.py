@@ -151,10 +151,10 @@ class TestReviewSchema(BaseTestSchema):
 
     review_mutation = """
         mutation CreateReview (
-            $book_id: ID!, $comment: String!, $value: ReviewValue!
+            $book_id: ID!, $comment: String!, $value: ReviewValue!, $date: Date
         ) {
             createReview (
-                bookId: $book_id, comment: $comment, value: $value
+                bookId: $book_id, comment: $comment, value: $value, date: $date
             ) {
                 review {
                     bookId
@@ -174,17 +174,19 @@ class TestReviewSchema(BaseTestSchema):
             "book_id": 1,
             "comment": "Pretty good book",
             "value": "GOOD",
+            "date": "2020-01-01",
         }
         self.graphql_request(self.review_mutation, variables, self.get_headers_with_auth())
 
         # Check review was saved correctly
-        query = "{ reviews(year: 2020) { comment } }"
+        query = "{ reviews(year: 2020) { comment, created } }"
         resp_data = self.graphql_request(query, headers=self.get_headers_with_auth()).get(
             "data", {}
         )
         reviews = resp_data.get("reviews")
         self.assertTrue(reviews)
         self.assertEqual(reviews[0].get("comment"), variables["comment"])
+        self.assertEqual(reviews[0].get("created"), variables["date"])
 
     def test_review_creation_demo_user(self):
         variables = {

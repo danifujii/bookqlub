@@ -61,18 +61,22 @@ class CreateReview(graphene.Mutation):
         book_id = graphene.ID()
         comment = graphene.String()
         value = graphene.Enum.from_enum(models.ReviewValue)()
+        date = graphene.Date(required=False)
 
     review = graphene.Field(lambda: types.Review)
 
-    def mutate(root, info, book_id, comment, value):
+    def mutate(root, info, book_id, comment, value, date=None):
         user_id = utils.validate_user_id(request, info.context["secret"])
 
         if user_id in info.context.get("demo_user_ids", frozenset()):
             raise Exception("Invalid action for demo user")
 
+        if not date:
+            date = datetime.now()
+
         session = info.context["session"]
         new_review = models.Review(
-            user_id=user_id, book_id=book_id, value=value, comment=comment, created=datetime.now()
+            user_id=user_id, book_id=book_id, value=value, comment=comment, created=date
         )
         session.add(new_review)
         session.commit()

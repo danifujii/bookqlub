@@ -40,8 +40,14 @@ const ADD_REVIEW = gql`
     $book_id: ID!
     $comment: String!
     $value: ReviewValue!
+    $date: Date
   ) {
-    createReview(bookId: $book_id, comment: $comment, value: $value) {
+    createReview(
+      bookId: $book_id
+      comment: $comment
+      value: $value
+      date: $date
+    ) {
       review {
         bookId
       }
@@ -118,6 +124,7 @@ const AddReviewModalForm = (props) => {
           book_id: book.id,
           comment: comment,
           value: value.toUpperCase(),
+          date: reviewDate.toISOString().split("T")[0],
         },
       })
         .then(() => {
