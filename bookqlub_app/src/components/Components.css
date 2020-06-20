@@ -80,7 +80,7 @@
     top: 0;
     background-color: rgba(252, 234, 222, .4);
     backdrop-filter: blur(50px);
-
+    z-index: 15;
 }
 
 .HeaderContent {
