@@ -19,6 +19,21 @@ const GET_REVIEWS = gql`
   }
 `;
 
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 export const ReviewGrid = (props) => {
   const { loading, error, data } = useQuery(GET_REVIEWS, {
     variables: { year: props.year },
@@ -49,13 +64,18 @@ export const ReviewGrid = (props) => {
   return (
     <div>
       {reviewsPerMonth &&
-        Object.keys(reviewsPerMonth).map((month) => (
-          <ReviewMonthSection
-            month={month}
-            reviews={reviewsPerMonth[month]}
-            key={month}
-          />
-        ))}
+        MONTHS.concat()
+          .reverse()
+          .map(
+            (month) =>
+              reviewsPerMonth[month] && (
+                <ReviewMonthSection
+                  month={month}
+                  reviews={reviewsPerMonth[month]}
+                  key={month}
+                />
+              )
+          )}
     </div>
   );
 };
@@ -79,7 +99,7 @@ function getReviewsByMonth(reviews) {
   const reviewsByMonth = {};
   reviews.forEach((review) => {
     const createdDate = new Date(review.created);
-    const month = createdDate.toLocaleString("default", { month: "long" });
+    const month = MONTHS[createdDate.getMonth()];
     if (!(month in reviewsByMonth)) reviewsByMonth[month] = [];
     reviewsByMonth[month].push(review);
   });
