@@ -21,6 +21,7 @@ class CreateUser(graphene.Mutation):
     user = graphene.Field(lambda: types.User)
     token = graphene.String()
 
+    @utils.rollback_on_exception
     def mutate(root, info, full_name, username, password):
         session = info.context["session"]
 
@@ -65,6 +66,7 @@ class CreateReview(graphene.Mutation):
 
     review = graphene.Field(lambda: types.Review)
 
+    @utils.rollback_on_exception
     def mutate(root, info, book_id, comment, value, date=None):
         user_id = utils.validate_user_id(request, info.context["secret"])
 

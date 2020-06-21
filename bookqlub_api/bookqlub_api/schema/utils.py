@@ -1,5 +1,5 @@
-from typing import Optional
-
+from typing import Callable, Optional
+from sqlalchemy import exc
 import jwt
 
 
@@ -23,3 +23,15 @@ def validate_user_id(request, secret: str) -> int:
     if not user_id:
         raise LookupError("Invalid authentication token")
     return user_id
+
+
+def rollback_on_exception(func: Callable):
+    def rollback_wrapper(root, info, *args, **kwargs):
+        try:
+            return func(root, info, *args, **kwargs)
+        except exc.SQLAlchemyError:
+            session = info.context["session"]
+            session.rollback()
+            raise Exception("Error with database")
+
+    return rollback_wrapper
