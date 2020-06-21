@@ -64,7 +64,7 @@ export const AddReviewButton = (props) => {
     <div className="Fab">
       <Fab
         variant="extended"
-        color="secondary"
+        color="primary"
         onClick={(_) => setModalOpen(true)}
       >
         <AddIcon className="FabIcon" />
