@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import gql from "graphql-tag";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { gql, useLazyQuery } from "@apollo/client";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import _ from "lodash";
 
@@ -31,7 +30,8 @@ export const ReviewsContainer = () => {
   }, []);
 
   useEffect(() => {
-    const yearsData = data && data.reviewsYears;
+    const yearsData =
+      data && data.reviewsYears ? data.reviewsYears.concat() : [];
     if (yearsData && !_.isEmpty(yearsData)) {
       yearsData.sort((a, b) => b - a); // Desceding order of years
       setSelectedYear(yearsData[0]);

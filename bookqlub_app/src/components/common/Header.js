@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useApolloClient } from "@apollo/react-hooks";
+import { useApolloClient } from "@apollo/client";
 import IconButton from "@material-ui/core/IconButton";
 import MeetingRoomRoundedIcon from "@material-ui/icons/MeetingRoomRounded";
 import { Tooltip } from "@material-ui/core";

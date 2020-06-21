@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { gql, useLazyQuery } from "@apollo/client";
 import { CircularProgress, TextField } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import gql from "graphql-tag";
 import _ from "lodash";
 
 const GET_BOOKS = gql`

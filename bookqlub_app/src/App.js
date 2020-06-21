@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import ApolloClient from "apollo-client";
-import { ApolloProvider } from "@apollo/react-hooks";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { setContext } from "apollo-link-context";
-import { createHttpLink } from "apollo-link-http";
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+  ApolloProvider,
+} from "@apollo/client";
+import { setContext } from "@apollo/link-context";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 

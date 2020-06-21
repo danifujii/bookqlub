@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { gql } from "apollo-boost";
 import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -12,7 +11,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import { CircularProgress, useTheme, useMediaQuery } from "@material-ui/core";
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 import { BookTitleInput } from "./BookTitleInput";
 
 const REVIEW_VALUES = ["Excellent", "Great", "Good", "Ok"];

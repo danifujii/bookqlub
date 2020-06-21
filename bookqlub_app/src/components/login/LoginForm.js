@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
-import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { gql, useMutation } from "@apollo/client";
 
 import { OrDivider } from "../common/OrDivider";
 import { onMutation } from "../common/FormUtils";

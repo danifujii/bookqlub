@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import gql from "graphql-tag";
-import { useLazyQuery } from "@apollo/react-hooks";
+import { gql, useLazyQuery } from "@apollo/client";
 import { LinearProgress, Grid } from "@material-ui/core";
 
 import { Review } from "./Review";
