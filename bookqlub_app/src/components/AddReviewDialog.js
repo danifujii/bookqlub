@@ -49,7 +49,11 @@ export const AddReviewDialog = (props) => {
       maxWidth="md"
       fullScreen={smallDevice}
     >
-      <AddReviewModalForm closeDialog={onClose} {...props} />
+      <AddReviewModalForm
+        closeDialog={onClose}
+        smallDevice={smallDevice}
+        {...props}
+      />
     </Dialog>
   );
 };
@@ -90,7 +94,11 @@ const AddReviewModalForm = (props) => {
   };
 
   return (
-    <form className="AddReviewContentContainer" onSubmit={handleSubmit}>
+    <form
+      className="AddReviewContentContainer"
+      onSubmit={handleSubmit}
+      style={props.smallDevice ? {} : { minWidth: 500 }}
+    >
       <h1>Add review</h1>
 
       <h3 className="AddReviewSubtitle">Title</h3>
