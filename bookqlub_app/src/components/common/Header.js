@@ -4,7 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MeetingRoomRoundedIcon from "@material-ui/icons/MeetingRoomRounded";
 import { Tooltip } from "@material-ui/core";
 
-import { UserContext } from "../App";
+import { UserContext } from "../../App";
 
 export const Header = () => {
   const { setUsername } = useContext(UserContext);

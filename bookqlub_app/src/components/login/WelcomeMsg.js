@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IconButton } from "@material-ui/core";
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
 
-import { AboutDialog } from "./AboutDialog";
+import { AboutDialog } from "../common/AboutDialog";
 
 export const WelcomeMsg = () => {
   const [open, setOpen] = useState(false);

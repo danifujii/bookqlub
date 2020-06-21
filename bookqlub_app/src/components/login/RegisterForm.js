@@ -3,8 +3,8 @@ import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
-import { OrDivider } from "./OrDivider";
-import { onMutation } from "./FormUtils";
+import { OrDivider } from "../common/OrDivider";
+import { onMutation } from "../common/FormUtils";
 
 const REGISTER = gql`
   mutation CreateUser(

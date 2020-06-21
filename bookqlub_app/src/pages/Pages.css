@@ -1,38 +1,3 @@
-.LoginWrapper {
-    height: 100%;
-    display: flex;
-}
-
-.LoginContainer {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    padding: 1rem;
-}
-
-.LoginWelcomeContainer {
-    background: #EE6C4D;
-}
-
-.LoginLogoContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    margin-bottom: 16px;
-}
-
-.LoginContainerContent {
-    flex: 1;
-}
-
-.LoginLogo {
-    width: 64px;
-    height: 64px;
-    display: inline-block;
-}
 
 .HomepageContainer {
     min-height: 100%;

@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { useMediaQuery } from "@material-ui/core";
 
-import { UserContext } from "../App";
-import { LoginForm } from "../components/LoginForm";
-import { RegisterForm } from "../components/RegisterForm";
-import { WelcomeMsg } from "../components/WelcomeMsg";
-import { ReactComponent as Logo } from "../logo.svg";
+import { UserContext } from "../../App";
+import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
+import { WelcomeMsg } from "./WelcomeMsg";
+import { ReactComponent as Logo } from "../../logo.svg";
+
+import "./Login.css";
 
 const onUser = (data, setUsername) => {
   localStorage.setItem("token", data.token);

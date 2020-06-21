@@ -8,8 +8,9 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 
 import "./components/Components.css";
+import "./components/common/Common.css";
 import "./pages/Pages.css";
-import { Login } from "./pages/Login";
+import { Login } from "./components/login/Login";
 import { Homepage } from "./pages/Homepage";
 
 const authLink = setContext((_, { headers }) => {
