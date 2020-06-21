@@ -4,9 +4,11 @@ import { useQuery } from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import _ from "lodash";
 
-import { AddReviewButton } from "./AddReviewButton";
+import { AddReviewButton } from "../add_review/AddReviewButton";
 import { ReviewGrid } from "./ReviewsGrid";
 import { ReviewYearSelector } from "./ReviewYearSelector";
+
+import "./Reviews.css";
 
 const GET_REVIEW_YEARS = gql`
   {
@@ -18,7 +20,7 @@ export const ReviewsContainer = () => {
   const [selectedYear, setSelectedYear] = useState(undefined);
   const [years, setYears] = useState(undefined);
   const { loading, error, data, refetch } = useQuery(GET_REVIEW_YEARS, {
-    fetchPolicy: "cache-and-network", // So that refetch go to server
+    fetchPolicy: "cache-and-network", // So that refetch goes to server
   });
 
   useEffect(() => {

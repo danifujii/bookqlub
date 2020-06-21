@@ -1,0 +1,57 @@
+.ReviewHeader {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+}
+
+.ReviewContainer {
+    display: flex;
+    height: 200px;
+}
+
+.ReviewContainer:hover {
+    background-color: #f2d3c9;
+}
+
+.ReviewCover {
+    width: 130px;
+}
+
+.ReviewDetailContainer {
+    flex: 2;
+    padding: 0 16px;
+    font-family: 'Public Sans', sans-serif;
+    position: relative;
+}
+
+
+.ReviewDetailContainer p {
+    margin: 8px 0;
+}
+
+.ReviewDetailTitle {
+    font-weight: 800;
+    font-size: 1.3em;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.ReviewDetailValue {
+    font-style: italic;
+    font-weight: 500;
+    color: #EE6C4D;
+    margin: 24px 0 !important;
+}
+
+.ReviewDetailDate {
+    font-style: italic;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.ReviewLoading {
+    width: 50%;
+    margin: 40px auto;
+}

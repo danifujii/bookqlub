@@ -4,6 +4,8 @@ import Fab from "@material-ui/core/Fab";
 
 import { AddReviewDialog } from "./AddReviewDialog";
 
+import "./AddReview.css";
+
 export const AddReviewButton = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
 
