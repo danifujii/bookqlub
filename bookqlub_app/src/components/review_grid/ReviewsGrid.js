@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import gql from "graphql-tag";
-import { useQuery } from "@apollo/react-hooks";
+import { useLazyQuery } from "@apollo/react-hooks";
 import { LinearProgress, Grid } from "@material-ui/core";
 
 import { Review } from "./Review";
@@ -35,11 +35,15 @@ const MONTHS = [
 ];
 
 export const ReviewGrid = (props) => {
-  const { loading, error, data } = useQuery(GET_REVIEWS, {
+  const [getReviews, { loading, error, data }] = useLazyQuery(GET_REVIEWS, {
     variables: { year: props.year },
     fetchPolicy: "cache-and-network",
   });
   const [reviewsPerMonth, setReviewsPerMonth] = useState(undefined);
+
+  useEffect(() => {
+    getReviews();
+  }, []);
 
   useEffect(() => {
     if (data && data.reviews) {
