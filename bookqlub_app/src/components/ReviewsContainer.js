@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import _ from "lodash";
 
-import { AddReviewButton } from "./AddReview";
+import { AddReviewButton } from "./AddReviewButton";
 import { ReviewGrid } from "./ReviewsGrid";
 import { ReviewYearSelector } from "./ReviewYearSelector";
 

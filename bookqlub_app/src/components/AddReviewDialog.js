@@ -4,36 +4,18 @@ import DateFnsUtils from "@date-io/date-fns";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import Fab from "@material-ui/core/Fab";
 import Input from "@material-ui/core/Input";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import AddIcon from "@material-ui/icons/Add";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import {
-  CircularProgress,
-  TextField,
-  useTheme,
-  useMediaQuery,
-} from "@material-ui/core";
-import { useLazyQuery, useMutation } from "@apollo/react-hooks";
-import _ from "lodash";
+import { CircularProgress, useTheme, useMediaQuery } from "@material-ui/core";
+import { useMutation } from "@apollo/react-hooks";
+import { BookTitleInput } from "./BookTitleInput";
 
 const REVIEW_VALUES = ["Excellent", "Great", "Good", "Ok"];
-
-const GET_BOOKS = gql`
-  query BooksByTitle($title: String!) {
-    booksByTitle(title: $title) {
-      id
-      title
-      coverUrl
-    }
-  }
-`;
 
 const ADD_REVIEW = gql`
   mutation CreateReview(
@@ -55,34 +37,20 @@ const ADD_REVIEW = gql`
   }
 `;
 
-export const AddReviewButton = (props) => {
-  const [modalOpen, setModalOpen] = useState(false);
+export const AddReviewDialog = (props) => {
+  const { open, onClose } = props;
   const theme = useTheme();
   const smallDevice = useMediaQuery(theme.breakpoints.down("xs"));
 
   return (
-    <div className="Fab">
-      <Fab
-        variant="extended"
-        color="primary"
-        onClick={(_) => setModalOpen(true)}
-      >
-        <AddIcon className="FabIcon" />
-        Add review
-      </Fab>
-
-      <Dialog
-        onClose={() => setModalOpen(false)}
-        open={modalOpen}
-        maxWidth="md"
-        fullScreen={smallDevice}
-      >
-        <AddReviewModalForm
-          closeDialog={() => setModalOpen(false)}
-          {...props}
-        />
-      </Dialog>
-    </div>
+    <Dialog
+      onClose={onClose}
+      open={open}
+      maxWidth="md"
+      fullScreen={smallDevice}
+    >
+      <AddReviewModalForm closeDialog={onClose} {...props} />
+    </Dialog>
   );
 };
 
@@ -92,29 +60,13 @@ const AddReviewModalForm = (props) => {
   const [reviewDate, setReviewDate] = useState(new Date());
   const [comment, setComment] = useState("");
 
-  const [titleOpen, setTitleOpen] = useState(false);
   const [formError, setFormError] = useState(undefined);
+  const [titleError, setTitleError] = useState(undefined);
 
-  const [getBooks, { loading, error, data }] = useLazyQuery(GET_BOOKS);
   const [
     addReview,
     { loading: onAddingReview, error: addReviewError },
   ] = useMutation(ADD_REVIEW);
-
-  const onSetBook = (_, book) => {
-    setBook(book);
-  };
-
-  const handleUserInput = (event) => {
-    event.persist();
-    queryBooks(event);
-  };
-  const queryBooks = _.debounce((event) => {
-    const titleQuery = event.target.value;
-    if (titleQuery) {
-      getBooks({ variables: { title: titleQuery } });
-    }
-  }, 500);
 
   const handleSubmit = (_) => {
     if (book) {
@@ -140,33 +92,7 @@ const AddReviewModalForm = (props) => {
       <h1>Add review</h1>
 
       <h3 className="AddReviewSubtitle">Title</h3>
-      <Autocomplete
-        open={titleOpen}
-        fullWidth
-        onOpen={() => setTitleOpen(true)}
-        onClose={() => setTitleOpen(false)}
-        onChange={onSetBook}
-        getOptionLabel={(option) => option.title}
-        options={(data && data.booksByTitle) || []}
-        loading={loading}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Book title"
-            fullWidth
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading && <CircularProgress color="primary" size={20} />}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            }}
-            onChange={handleUserInput}
-          />
-        )}
-      />
+      <BookTitleInput onSetBook={setBook} onError={setTitleError} />
 
       <h3 className="AddReviewSubtitle">Value</h3>
       <Select
@@ -209,10 +135,10 @@ const AddReviewModalForm = (props) => {
         onChange={(e) => setComment(e.target.value)}
       />
 
-      {(formError || error || addReviewError) && (
+      {(formError || titleError || addReviewError) && (
         <p className="ErrorMsg">
           {formError ||
-            (error && error.message) ||
+            (titleError && titleError.message) ||
             (addReviewError && addReviewError.message)}
         </p>
       )}
