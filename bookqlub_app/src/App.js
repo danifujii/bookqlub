@@ -36,7 +36,7 @@ const client = new ApolloClient({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#9C0D38",
+      main: "#C42D5F",
     },
   },
 });
