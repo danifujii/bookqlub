@@ -13,7 +13,9 @@ export const Header = () => {
   return (
     <div className="HeaderContainer">
       <div className="HeaderContent">
-        <h1 className="LoginHeader HeaderTitle">Bookqlub</h1>
+        <a href="/">
+          <h1 className="LoginHeader HeaderTitle">Bookqlub</h1>
+        </a>
 
         <Tooltip title="Logout">
           <IconButton

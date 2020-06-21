@@ -103,6 +103,10 @@
     flex-direction: row;
 }
 
+.HeaderContent a {
+    text-decoration: none;
+}
+
 .HeaderTitle {
     display: inline-flex;
     color: #EE6C4D;
