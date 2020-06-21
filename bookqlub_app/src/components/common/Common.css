@@ -76,8 +76,8 @@
 }
 
 .DividerWrapper {
-    margin-top: 20px;
-    width: 55%;
+    width: 100%;
+    max-width: 500px;
     margin: 20px auto 0;
 }
 
