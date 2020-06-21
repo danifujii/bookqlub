@@ -68,7 +68,9 @@ const AddReviewModalForm = (props) => {
     { loading: onAddingReview, error: addReviewError },
   ] = useMutation(ADD_REVIEW);
 
-  const handleSubmit = (_) => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
     if (book) {
       setFormError(undefined);
       addReview({
@@ -88,7 +90,7 @@ const AddReviewModalForm = (props) => {
   };
 
   return (
-    <div className="AddReviewContentContainer">
+    <form className="AddReviewContentContainer" onSubmit={handleSubmit}>
       <h1>Add review</h1>
 
       <h3 className="AddReviewSubtitle">Title</h3>
@@ -151,12 +153,12 @@ const AddReviewModalForm = (props) => {
             <Button color="primary" onClick={() => props.closeDialog()}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button variant="contained" color="primary" type="submit">
               Add review
             </Button>
           </DialogActions>
         )}
       </div>
-    </div>
+    </form>
   );
 };
