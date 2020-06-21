@@ -35,9 +35,14 @@ export const RegisterForm = (props) => {
     }
   }, [data]);
 
+  const submit = (event) => {
+    event.preventDefault();
+    onMutation(register, { full_name, username, password }, setInputError);
+  };
+
   return (
     <div>
-      <div>
+      <form onSubmit={submit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -82,13 +87,7 @@ export const RegisterForm = (props) => {
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={() =>
-                  onMutation(
-                    register,
-                    { full_name, username, password },
-                    setInputError
-                  )
-                }
+                type="submit"
               >
                 Register
               </Button>
@@ -101,7 +100,7 @@ export const RegisterForm = (props) => {
         <Button size="large" color="primary" onClick={() => onLogin()}>
           Login
         </Button>
-      </div>
+      </form>
     </div>
   );
 };

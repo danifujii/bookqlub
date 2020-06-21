@@ -40,62 +40,67 @@ const LoginFormFields = (props) => {
     );
   };
 
+  const submit = (event) => {
+    event.preventDefault();
+    onMutation(login, { username, password }, setInputError);
+  };
+
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <TextField
-          id="username-input"
-          label="Username"
-          variant="outlined"
-          className="LoginInput"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          id="password-input"
-          label="Password"
-          variant="outlined"
-          type="password"
-          className="LoginInput"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Grid>
-      {(error || inputError) && (
+    <form onSubmit={submit}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <p className="ErrorMsg LoginErrorMsg">
-            {inputError || error.message}
-          </p>
+          <TextField
+            id="username-input"
+            label="Username"
+            variant="outlined"
+            className="LoginInput"
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </Grid>
-      )}
-      <Grid item xs={12}>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <div>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={(_) =>
-                onMutation(login, { username, password }, setInputError)
-              }
-            >
-              Login
-            </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="large"
-              style={{ marginLeft: 16 }}
-              onClick={loginDemoUser}
-            >
-              Demo
-            </Button>
-          </div>
+        <Grid item xs={12}>
+          <TextField
+            id="password-input"
+            label="Password"
+            variant="outlined"
+            type="password"
+            className="LoginInput"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Grid>
+        {(error || inputError) && (
+          <Grid item xs={12}>
+            <p className="ErrorMsg LoginErrorMsg">
+              {inputError || error.message}
+            </p>
+          </Grid>
         )}
+        <Grid item xs={12}>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                type="submit"
+              >
+                Login
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                size="large"
+                style={{ marginLeft: 16 }}
+                onClick={loginDemoUser}
+              >
+                Demo
+              </Button>
+            </div>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </form>
   );
 };
 
