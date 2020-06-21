@@ -13,7 +13,7 @@ export const Footer = () => {
     <div className="FooterContainer">
       <div className="FooterDivider" />
       <p>&copy; 2020, designed and built by Daniel Fujii &middot;</p>
-      <a href="" onClick={handleLinkClick}>
+      <a href="/#" onClick={handleLinkClick}>
         <p>&nbsp;About</p>
       </a>
       <AboutDialog open={open} onClose={() => setOpen(false)} />
