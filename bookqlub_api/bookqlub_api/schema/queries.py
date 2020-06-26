@@ -52,8 +52,7 @@ class Query(graphene.ObjectType):
         reviews_count = review_query.count()
         page_count = math.ceil(reviews_count / REVIEW_PAGE_SIZE)
 
-        reviews = review_query.all()
-
+        reviews = review_query.offset((page - 1) * REVIEW_PAGE_SIZE).limit(REVIEW_PAGE_SIZE).all()
         return {"reviews": reviews, "page_info": {"total_pages": page_count, "current_page": page}}
 
     def resolve_reviews_years(self, info):
