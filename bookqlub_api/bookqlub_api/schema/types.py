@@ -27,5 +27,5 @@ class PageInfo(graphene.ObjectType):
 
 
 class ReviewList(graphene.ObjectType):
-    reviews = graphene.List(Review)
+    items = graphene.List(Review)
     page_info = graphene.Field(PageInfo)
