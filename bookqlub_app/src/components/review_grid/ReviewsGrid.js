@@ -40,8 +40,22 @@ export const ReviewGrid = (props) => {
   });
   const [reviewsPerMonth, setReviewsPerMonth] = useState(undefined);
 
+  const trackScrolling = (event) => {
+    const atBottom =
+      window.innerHeight + window.scrollY >= document.body.scrollHeight;
+    if (atBottom) {
+      console.log("At bottom");
+      // Fetch next page
+    }
+  };
+
   useEffect(() => {
     getReviews();
+    document.addEventListener("scroll", trackScrolling);
+
+    return () => {
+      document.removeEventListener("scroll", trackScrolling);
+    };
   }, []);
 
   useEffect(() => {
