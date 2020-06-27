@@ -2,7 +2,7 @@
 
 ## [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/danifujii/bookqlub/blob/master/LICENSE) [![Version](https://img.shields.io/github/v/release/danifujii/bookqlub)](https://github.com/danifujii/bookqlub/releases) [![codecov](https://codecov.io/gh/danifujii/bookqlub/branch/master/graph/badge.svg)](https://codecov.io/gh/danifujii/bookqlub)
 
-[Bookqlub](https://bookqlub.com/) is a minimalistic, simple to use book review site, built to gain experience with GraphQL and develop a useful app. 
+[Bookqlub](https://bookqlub.com/) is a minimalist, simple to use book review site, built to gain experience with GraphQL and develop a useful app. 
 
 ## Structure
 
