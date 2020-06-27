@@ -150,6 +150,14 @@ class TestReviewSchema(BaseTestSchema):
         }
     """
 
+    delete_mutation = """
+        mutation DeleteReview($book_id: ID!) {
+            deleteReview(bookId: $book_id) {
+                ok
+            }
+        }
+    """
+
     def test_review_creation(self):
         # Create new review
         variables = {
@@ -196,6 +204,43 @@ class TestReviewSchema(BaseTestSchema):
         query = "{ reviewsYears }"
         data = self.graphql_request(query, headers=self.get_headers_with_auth()).get("data")
         self.assertListEqual(data.get("reviewsYears", []), sorted(years))
+
+    def test_delete_review(self):
+        # Setup review to delete
+        user_id = 128
+        book_id = 512
+        self.session.add(models.Book(id=book_id, title="Book title", author="Another author"))
+        self.session.add(
+            models.Review(
+                user_id=user_id,
+                book_id=book_id,
+                value="GREAT",
+                created=datetime.strptime("2020-01-01", "%Y-%m-%d"),
+            )
+        )
+        self.session.commit()
+
+        # Check review exists
+        query = "{ reviews(year: 2020) { items { comment } } }"
+        resp_data = self.graphql_request(
+            query, headers=self.get_headers_with_auth(user_id=user_id)
+        ).get("data", {})
+        reviews = resp_data.get("reviews", {}).get("items", [])
+        self.assertEqual(len(reviews), 1)
+
+        # Delete review
+        variables = {"book_id": book_id}
+        self.graphql_request(
+            self.delete_mutation, variables, headers=self.get_headers_with_auth(user_id=user_id)
+        )
+
+        # Check review no longer exists
+        query = "{ reviews(year: 2020) { items { comment } } }"
+        resp_data = self.graphql_request(
+            query, headers=self.get_headers_with_auth(user_id=user_id)
+        ).get("data", {})
+        reviews = resp_data.get("reviews", {}).get("items", [])
+        self.assertFalse(reviews)
 
 
 class TestReviewListSchema(BaseTestSchema):
