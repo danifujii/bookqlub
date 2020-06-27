@@ -2,8 +2,8 @@ language: python
 python:
     3.6
 before_install:
-    - pip install -r requirements.txt
-    - pip install -r requirements_dev.txt
+    - pip install -r bookqlub_api/requirements.txt
+    - pip install -r bookqlub_api/requirements_dev.txt
 before_script:
     - cd bookqlub_api
 install:
