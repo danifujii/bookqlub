@@ -242,6 +242,16 @@ class TestReviewSchema(BaseTestSchema):
         reviews = resp_data.get("reviews", {}).get("items", [])
         self.assertFalse(reviews)
 
+    def test_delete_review_demo_user(self):
+        variables = {"book_id": 1}
+        errors = self.graphql_request(
+            self.delete_mutation,
+            variables,
+            headers=self.get_headers_with_auth(user_id=self.demo_user_id),
+        ).get("errors")
+        self.assertTrue(errors)
+        self.assertIn("Invalid action", errors[0].get("message"))
+
 
 class TestReviewListSchema(BaseTestSchema):
     def setUp(self):
