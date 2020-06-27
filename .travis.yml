@@ -4,10 +4,8 @@ python:
 before_install:
     - pip install -r bookqlub_api/requirements.txt
     - pip install -r bookqlub_api/requirements_dev.txt
-before_script:
-    - cd bookqlub_api
 install:
-    - pip install .
+    - pip install bookqlub_api/.
 script: pytest
 after_success:
     - codecov
