@@ -12,7 +12,6 @@ REVIEW_PAGE_SIZE = 15
 
 
 class Query(graphene.ObjectType):
-    books = graphene.List(types.Book)
     books_by_title = graphene.Field(
         graphene.List(types.Book),
         title=graphene.String(required=True),
@@ -21,10 +20,6 @@ class Query(graphene.ObjectType):
     user = graphene.Field(types.User)
     reviews = graphene.Field(types.ReviewList, year=graphene.Int(), page=graphene.Int())
     reviews_years = graphene.List(graphene.Int)
-
-    def resolve_books(self, info):
-        _ = utils.validate_user_id(request, info.context["secret"])
-        return types.Book.get_query(info).all()
 
     def resolve_books_by_title(self, info, title, already_reviewed=False):
         user_id = utils.validate_user_id(request, info.context["secret"])
