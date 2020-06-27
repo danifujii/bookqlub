@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import { LinearProgress, Grid } from "@material-ui/core";
 
 import { Review } from "./Review";
 
 const GET_REVIEWS = gql`
-  query Reviews($year: Int!) {
-    reviews(year: $year) {
+  query Reviews($year: Int!, $page: Int!) {
+    reviews(year: $year, page: $page) {
       items {
         created
         value
@@ -15,6 +15,10 @@ const GET_REVIEWS = gql`
           title
           coverUrl
         }
+      }
+      pageInfo {
+        currentPage
+        totalPages
       }
     }
   }
@@ -36,23 +40,50 @@ const MONTHS = [
 ];
 
 export const ReviewGrid = (props) => {
-  const [getReviews, { loading, error, data }] = useLazyQuery(GET_REVIEWS, {
-    variables: { year: props.year },
-    fetchPolicy: "cache-and-network",
-  });
+  const [
+    getReviews,
+    { loading, error, data, fetchMore },
+  ] = useLazyQuery(GET_REVIEWS, { fetchPolicy: "cache-and-network" });
   const [reviewsPerMonth, setReviewsPerMonth] = useState(undefined);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const trackScrolling = (event) => {
+  const dataRef = useRef(data);
+  const fetchMoreRef = useRef(fetchMore);
+
+  const trackScrolling = (_) => {
     const atBottom =
       window.innerHeight + window.scrollY >= document.body.scrollHeight;
-    if (atBottom) {
-      console.log("At bottom");
-      // Fetch next page
+    if (atBottom && dataRef.current && fetchMoreRef.current) {
+      const currentData = dataRef.current && dataRef.current.reviews;
+      if (currentData.pageInfo.currentPage < currentData.pageInfo.totalPages) {
+        setLoadingMore(true);
+
+        fetchMoreRef.current({
+          query: GET_REVIEWS,
+          variables: {
+            year: props.year,
+            page: currentData.pageInfo.currentPage + 1,
+          },
+          updateQuery: (previousData, { fetchMoreResult }) => {
+            setLoadingMore(false);
+            return {
+              reviews: {
+                pageInfo: fetchMoreResult.reviews.pageInfo,
+                items: [
+                  ...previousData.reviews.items,
+                  ...fetchMoreResult.reviews.items,
+                ],
+              },
+            };
+          },
+        });
+      }
     }
   };
 
+  // Initial render
   useEffect(() => {
-    getReviews();
+    getReviews({ variables: { year: props.year, page: 1 } });
     document.addEventListener("scroll", trackScrolling);
 
     return () => {
@@ -64,15 +95,9 @@ export const ReviewGrid = (props) => {
     if (data && data.reviews.items) {
       setReviewsPerMonth(getReviewsByMonth(data.reviews.items));
     }
-  }, [data]);
-
-  if (loading) {
-    return (
-      <div className="ReviewLoading">
-        <LinearProgress />
-      </div>
-    );
-  }
+    dataRef.current = data;
+    fetchMoreRef.current = fetchMore;
+  }, [data, fetchMore]);
 
   if (error) {
     return (
@@ -95,6 +120,11 @@ export const ReviewGrid = (props) => {
                 />
               )
           )}
+      {(loading || loadingMore) && (
+        <div className="ReviewLoading">
+          <LinearProgress />
+        </div>
+      )}
     </div>
   );
 };
