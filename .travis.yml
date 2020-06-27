@@ -6,6 +6,6 @@ before_install:
     - pip install -r bookqlub_api/requirements_dev.txt
 install:
     - pip install bookqlub_api/.
-script: pytest
+script: pytest --cov=bookqlub_api/bookqlub_api bookqlub_api
 after_success:
     - codecov
