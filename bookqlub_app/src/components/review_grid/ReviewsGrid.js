@@ -11,6 +11,7 @@ const GET_REVIEWS = gql`
         created
         value
         book {
+          id
           author
           title
           coverUrl
@@ -117,6 +118,7 @@ export const ReviewGrid = (props) => {
                   month={month}
                   reviews={reviewsPerMonth[month]}
                   key={month}
+                  {...props}
                 />
               )
           )}
@@ -136,7 +138,7 @@ const ReviewMonthSection = (props) => {
       <Grid container spacing={2}>
         {props.reviews.map((review, idx) => (
           <Grid item lg={4} md={6} xs={12} key={idx}>
-            <Review review={review} />
+            <Review review={review} {...props} />
           </Grid>
         ))}
       </Grid>
