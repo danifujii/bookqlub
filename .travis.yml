@@ -8,4 +8,4 @@ install:
     - pip install bookqlub_api/.
 script: pytest --cov=bookqlub_api/bookqlub_api bookqlub_api
 after_success:
-    - codecov
+    - bash <(curl -s https://codecov.io/bash)
