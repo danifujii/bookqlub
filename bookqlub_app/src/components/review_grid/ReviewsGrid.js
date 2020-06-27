@@ -7,12 +7,14 @@ import { Review } from "./Review";
 const GET_REVIEWS = gql`
   query Reviews($year: Int!) {
     reviews(year: $year) {
-      created
-      value
-      book {
-        author
-        title
-        coverUrl
+      items {
+        created
+        value
+        book {
+          author
+          title
+          coverUrl
+        }
       }
     }
   }
@@ -59,8 +61,8 @@ export const ReviewGrid = (props) => {
   }, []);
 
   useEffect(() => {
-    if (data && data.reviews) {
-      setReviewsPerMonth(getReviewsByMonth(data.reviews));
+    if (data && data.reviews.items) {
+      setReviewsPerMonth(getReviewsByMonth(data.reviews.items));
     }
   }, [data]);
 
