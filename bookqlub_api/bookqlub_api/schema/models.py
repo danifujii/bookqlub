@@ -50,3 +50,5 @@ class Backlog(Base):
 
     user_id = SA.Column(SA.Integer, SA.ForeignKey("users.id"), primary_key=True)
     book_id = SA.Column(SA.Integer, SA.ForeignKey("books.id"), primary_key=True)
+
+    book = SA.orm.relationship("Book")
