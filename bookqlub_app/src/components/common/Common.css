@@ -123,3 +123,9 @@
 .NavLinkActive {
     border-bottom: 2px solid currentColor;
 }
+
+.SectionHeader {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+    margin-top: 8px;
+}

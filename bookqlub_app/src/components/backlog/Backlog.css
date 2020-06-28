@@ -1,0 +1,10 @@
+.BacklogAddContainer {
+    display: flex;
+    margin-top: 32px;
+}
+
+.BacklogAddInput {
+    margin-right: 16px;
+    width: 100%;
+    max-width: 600px;
+}
