@@ -14,6 +14,7 @@ import "./components/Components.css";
 
 import { Login } from "./components/login/Login";
 import { Homepage } from "./components/Homepage";
+import { BrowserRouter } from "react-router-dom";
 
 const authLink = setContext((_, { headers }) => {
   // TODO move to HttpOnly cookie
@@ -53,15 +54,17 @@ function App() {
   const value = { username, setUsername };
 
   return (
-    <div style={{ height: "100%" }}>
-      <UserContext.Provider value={value}>
-        <ApolloProvider client={client}>
-          <ThemeProvider theme={theme}>
-            {username ? <Homepage /> : <Login />}
-          </ThemeProvider>
-        </ApolloProvider>
-      </UserContext.Provider>
-    </div>
+    <BrowserRouter>
+      <div style={{ height: "100%" }}>
+        <UserContext.Provider value={value}>
+          <ApolloProvider client={client}>
+            <ThemeProvider theme={theme}>
+              {username ? <Homepage /> : <Login />}
+            </ThemeProvider>
+          </ApolloProvider>
+        </UserContext.Provider>
+      </div>
+    </BrowserRouter>
   );
 }
 

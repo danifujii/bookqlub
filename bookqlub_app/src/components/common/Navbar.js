@@ -1,9 +1,18 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
+
+const linkTitles = {
+  "/": "Reviews",
+};
 
 export const Navbar = () => {
   return (
     <div className="NavbarContainer">
-      <a href="/reviews">Reviews</a>
+      {Object.keys(linkTitles).map((link) => (
+        <NavLink to={link} activeClassName="NavLinkActive">
+          {linkTitles[link]}
+        </NavLink>
+      ))}
     </div>
   );
 };

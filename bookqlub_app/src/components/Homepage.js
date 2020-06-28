@@ -5,6 +5,7 @@ import { Header } from "./common/Header";
 import { ReviewsContainer } from "./review_grid/ReviewsContainer";
 import { Footer } from "./common/Footer";
 import { Navbar } from "./common/Navbar";
+import { Switch, Route } from "react-router-dom";
 
 export const Homepage = () => {
   return (
@@ -12,7 +13,9 @@ export const Homepage = () => {
       <Container maxWidth="lg" className="HomepageContainer">
         <Header />
         <Navbar />
-        <ReviewsContainer />
+        <Switch>
+          <Route exact path="/" component={ReviewsContainer} />
+        </Switch>
         <Footer />
       </Container>
     </div>
