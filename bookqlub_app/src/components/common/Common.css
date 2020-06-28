@@ -97,3 +97,29 @@
     font-weight: 500;
     color: slategray;
 }
+
+.NavbarContainer {
+    text-align: center;
+    height: 40px;
+}
+
+.NavbarContainer a {
+    display: inline-block;
+    color: #323232;
+    margin: 16px 16px 8px 16px;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: 'Public Sans', 'Roboto', sans-serif;
+}
+
+.NavbarContainer a:visited {
+    color: #323232;
+}
+
+.NavbarContainer a:hover {
+    border-bottom: 2px solid #EE6C4D;
+}
+
+.NavLinkActive {
+    border-bottom: 2px solid #E69A81;
+}
