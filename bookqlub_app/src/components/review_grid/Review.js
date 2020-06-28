@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import { IconButton } from "@material-ui/core";
-import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
-  const { book, review, onDelete } = props;
+  const { book, review, onDeleteClick } = props;
 
   const [hovering, setHovering] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const onDeleteClick = () => {
+  const handleDeleteClick = () => {
     setHovering(false);
-    setDeleteOpen(true);
-  };
-
-  const handleDelete = () => {
-    setDeleteOpen(false);
-    onDelete();
+    onDeleteClick();
   };
 
   return (
@@ -41,19 +34,13 @@ export const Review = (props) => {
           </div>
         )}
 
-        {hovering && (
+        {hovering && onDeleteClick && (
           <div className="ReviewDeleteButton">
-            <IconButton onClick={onDeleteClick}>
+            <IconButton onClick={handleDeleteClick}>
               <DeleteOutlineRoundedIcon />
             </IconButton>
           </div>
         )}
-        <ReviewDeleteDialog
-          bookId={review.book.id}
-          open={deleteOpen}
-          onClose={() => setDeleteOpen(false)}
-          onDelete={handleDelete}
-        />
       </div>
     </div>
   );

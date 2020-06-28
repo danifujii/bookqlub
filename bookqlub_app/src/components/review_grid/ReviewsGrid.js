@@ -3,6 +3,7 @@ import { gql, useLazyQuery } from "@apollo/client";
 import { LinearProgress, Grid } from "@material-ui/core";
 
 import { Review } from "./Review";
+import { ReviewDeleteDialog } from "./ReviewDelete";
 
 const GET_REVIEWS = gql`
   query Reviews($year: Int!, $page: Int!) {
@@ -138,10 +139,41 @@ const ReviewMonthSection = (props) => {
       <Grid container spacing={2}>
         {props.reviews.map((review, idx) => (
           <Grid item lg={4} md={6} xs={12} key={idx}>
-            <Review review={review} book={review.book} {...props} />
+            <DeletableReview review={review} {...props} />
           </Grid>
         ))}
       </Grid>
+    </div>
+  );
+};
+
+const DeletableReview = (props) => {
+  const { review, onDelete } = props;
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const handleDelete = () => {
+    setDeleteOpen(false);
+    onDelete();
+  };
+
+  const onDeleteClick = () => {
+    setDeleteOpen(true);
+  };
+
+  return (
+    <div>
+      <Review
+        book={review.book}
+        review={review}
+        onDeleteClick={onDeleteClick}
+      />
+      <ReviewDeleteDialog
+        bookId={review.book.id}
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
