@@ -117,9 +117,9 @@
 }
 
 .NavbarContainer a:hover {
-    border-bottom: 2px solid currentColor;
+    border-bottom: 2px solid #EE6C4D;
 }
 
 .NavLinkActive {
-    border-bottom: 2px solid currentColor;
+    border-bottom: 2px solid #E69A81;
 }
