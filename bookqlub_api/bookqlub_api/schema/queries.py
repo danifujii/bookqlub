@@ -20,6 +20,7 @@ class Query(graphene.ObjectType):
     user = graphene.Field(types.User)
     reviews = graphene.Field(types.ReviewList, year=graphene.Int(), page=graphene.Int())
     reviews_years = graphene.List(graphene.Int)
+    backlog = graphene.List(types.Backlog)
 
     def resolve_books_by_title(self, info, title, already_reviewed=False):
         user_id = utils.validate_user_id(request, info.context["secret"])
@@ -64,3 +65,17 @@ class Query(graphene.ObjectType):
             .all()
         )
         return [review.created.year for review in reviews]
+
+    def resolve_backlog(self, info):
+        user_id = utils.validate_user_id(request, info.context["secret"])
+        session = info.context["session"]
+
+        reviewed_books_ids = (
+            session.query(models.Review.book_id).filter(models.Review.user_id == user_id).subquery()
+        )
+        return (
+            types.Backlog.get_query(info)
+            .filter(models.Backlog.user_id == user_id)
+            .filter(models.Backlog.book_id.notin_(reviewed_books_ids))
+            .all()
+        )
