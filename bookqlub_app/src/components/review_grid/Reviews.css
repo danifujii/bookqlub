@@ -24,7 +24,6 @@
     position: relative;
 }
 
-
 .ReviewDetailContainer p {
     margin: 8px 0;
 }
@@ -55,4 +54,17 @@
 .ReviewLoading {
     width: 50%;
     margin: 40px auto;
+}
+
+.ReviewDeleteButton {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 8px;
+}
+
+.ReviewDeleteProgress {
+    float: right;
+    margin-right: 36px;
+    margin-bottom: 36px;
 }
