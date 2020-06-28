@@ -54,7 +54,7 @@ export const ReviewGrid = (props) => {
   const trackScrolling = (_) => {
     const atBottom =
       window.innerHeight + window.scrollY >= document.body.scrollHeight;
-    if (atBottom && dataRef.current && fetchMoreRef.current) {
+    if (atBottom && dataRef.current && fetchMoreRef.current && !loadingMore) {
       const currentData = dataRef.current && dataRef.current.reviews;
       if (currentData.pageInfo.currentPage < currentData.pageInfo.totalPages) {
         setLoadingMore(true);
@@ -66,7 +66,6 @@ export const ReviewGrid = (props) => {
             page: currentData.pageInfo.currentPage + 1,
           },
           updateQuery: (previousData, { fetchMoreResult }) => {
-            setLoadingMore(false);
             return {
               reviews: {
                 pageInfo: fetchMoreResult.reviews.pageInfo,
@@ -95,6 +94,7 @@ export const ReviewGrid = (props) => {
   useEffect(() => {
     if (data && data.reviews.items) {
       setReviewsPerMonth(getReviewsByMonth(data.reviews.items));
+      setLoadingMore(false);
     }
     dataRef.current = data;
     fetchMoreRef.current = fetchMore;
