@@ -63,7 +63,9 @@ export const ReviewsContainer = () => {
           <b>Add review</b> button.
         </p>
       )}
-      {selectedYear && <ReviewGrid year={selectedYear} />}
+      {selectedYear && (
+        <ReviewGrid year={selectedYear} onDelete={() => getReviewYears()} />
+      )}
       <AddReviewButton onSubmit={() => getReviewYears()} />
     </div>
   );
