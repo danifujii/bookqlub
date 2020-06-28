@@ -32,7 +32,16 @@ const httpLink = createHttpLink({
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      ReviewList: {
+        keyFields: ["pageInfo", ["currentPage"]],
+      },
+      Review: {
+        keyFields: ["book", ["id"]],
+      },
+    },
+  }),
 });
 
 const theme = createMuiTheme({
