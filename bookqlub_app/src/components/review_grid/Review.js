@@ -23,24 +23,26 @@ export const Review = (props) => {
       </div>
 
       <div className="ReviewDetailContainer">
-        <p className="ReviewDetailTitle">{book.title}</p>
-        <p>
-          <i>{book.author}</i>
-        </p>
-        {review && (
-          <div>
-            <p className="ReviewDetailValue">{review.value}</p>
-            <p className="ReviewDetailDate">{getDate(review.created)}</p>
-          </div>
-        )}
+        <div>
+          <p className="ReviewDetailTitle">{book.title}</p>
+          <p className="ReviewDetailAuthor">
+            <i>{book.author}</i>
+          </p>
+          {review && (
+            <div>
+              <p className="ReviewDetailValue">{review.value}</p>
+              <p className="ReviewDetailDate">{getDate(review.created)}</p>
+            </div>
+          )}
 
-        {hovering && onDeleteClick && (
-          <div className="ReviewDeleteButton">
-            <IconButton onClick={handleDeleteClick}>
-              <DeleteOutlineRoundedIcon />
-            </IconButton>
-          </div>
-        )}
+          {hovering && onDeleteClick && (
+            <div className="ReviewDeleteButton">
+              <IconButton onClick={handleDeleteClick}>
+                <DeleteOutlineRoundedIcon />
+              </IconButton>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
