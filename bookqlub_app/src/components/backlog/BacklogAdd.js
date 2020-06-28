@@ -13,15 +13,19 @@ const ADD_BACKLOG_ENTRY = gql`
   }
 `;
 
-export const BacklogAdd = () => {
+export const BacklogAdd = (props) => {
   const [book, setBook] = useState(undefined);
   const [bookError, setBookError] = useState(undefined);
 
   const [addBacklog, { loading, error }] = useMutation(ADD_BACKLOG_ENTRY);
   const onAdd = () => {
-    addBacklog({ variables: { book_id: book.id } }).catch((e) => {
-      console.log(e);
-    });
+    addBacklog({ variables: { book_id: book.id } })
+      .then(() => {
+        if (props.onSuccessfulAdd) props.onSuccessfulAdd();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
