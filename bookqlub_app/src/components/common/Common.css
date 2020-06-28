@@ -123,3 +123,25 @@
 .NavLinkActive {
     border-bottom: 2px solid #E69A81;
 }
+
+.Page404Container {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #323232;
+    position: relative;
+}
+
+.Page404Container h1 {
+    font-size: 6em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.Page404Container h2 {
+    margin-top: 8px;
+    margin-right: 8px;
+    font-size: 2em;
+    display: inline-block;
+}
