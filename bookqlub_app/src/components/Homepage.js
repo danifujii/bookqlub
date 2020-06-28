@@ -6,6 +6,7 @@ import { ReviewsContainer } from "./review_grid/ReviewsContainer";
 import { Footer } from "./common/Footer";
 import { Navbar } from "./common/Navbar";
 import { Switch, Route } from "react-router-dom";
+import { Page404 } from "./common/Page404";
 
 export const Homepage = () => {
   return (
@@ -15,6 +16,7 @@ export const Homepage = () => {
         <Navbar />
         <Switch>
           <Route exact path="/" component={ReviewsContainer} />
+          <Route path="*" component={Page404} />
         </Switch>
         <Footer />
       </Container>
