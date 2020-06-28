@@ -85,7 +85,30 @@ class CreateReview(graphene.Mutation):
         return CreateReview(review=new_review)
 
 
+class DeleteReview(graphene.Mutation):
+    class Arguments:
+        book_id = graphene.ID()
+
+    ok = graphene.Boolean()
+
+    @utils.rollback_on_exception
+    def mutate(root, info, book_id):
+        user_id = utils.validate_user_id(request, info.context["secret"])
+
+        if user_id in info.context.get("demo_user_ids", frozenset()):
+            raise Exception("Invalid action for demo user")
+
+        session = info.context["session"]
+        types.Review.get_query(info).filter(models.Review.book_id == book_id).filter(
+            models.Review.user_id == user_id
+        ).delete()
+        session.commit()
+
+        return {"ok": True}
+
+
 class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
+    delete_review = DeleteReview.Field()
     login = Login.Field()
