@@ -138,7 +138,7 @@ const ReviewMonthSection = (props) => {
       <Grid container spacing={2}>
         {props.reviews.map((review, idx) => (
           <Grid item lg={4} md={6} xs={12} key={idx}>
-            <Review review={review} {...props} />
+            <Review review={review} book={review.book} {...props} />
           </Grid>
         ))}
       </Grid>

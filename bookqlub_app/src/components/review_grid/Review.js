@@ -4,7 +4,7 @@ import { IconButton } from "@material-ui/core";
 import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
-  const { review, onDelete } = props;
+  const { book, review, onDelete } = props;
 
   const [hovering, setHovering] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -26,20 +26,20 @@ export const Review = (props) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="ReviewCover">
-        <img
-          src={review.book.coverUrl}
-          alt={`${review.book.title} cover`}
-          height="200px"
-        />
+        <img src={book.coverUrl} alt={`${book.title} cover`} height="200px" />
       </div>
 
       <div className="ReviewDetailContainer">
-        <p className="ReviewDetailTitle">{review.book.title}</p>
+        <p className="ReviewDetailTitle">{book.title}</p>
         <p>
-          <i>{review.book.author}</i>
+          <i>{book.author}</i>
         </p>
-        <p className="ReviewDetailValue">{review.value}</p>
-        <p className="ReviewDetailDate">{getDate(review.created)}</p>
+        {review && (
+          <div>
+            <p className="ReviewDetailValue">{review.value}</p>
+            <p className="ReviewDetailDate">{getDate(review.created)}</p>
+          </div>
+        )}
 
         {hovering && (
           <div className="ReviewDeleteButton">
