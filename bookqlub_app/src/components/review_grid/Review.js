@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
+import SubjectRoundedIcon from "@material-ui/icons/SubjectRounded";
 import { IconButton } from "@material-ui/core";
 import { ReviewDeleteDialog } from "./ReviewDelete";
 
@@ -43,6 +44,9 @@ export const Review = (props) => {
 
         {hovering && (
           <div className="ReviewDeleteButton">
+            <IconButton>
+              <SubjectRoundedIcon />
+            </IconButton>
             <IconButton onClick={onDeleteClick}>
               <DeleteOutlineRoundedIcon />
             </IconButton>
