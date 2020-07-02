@@ -10,6 +10,7 @@ const GET_REVIEWS = gql`
       items {
         created
         value
+        comment
         book {
           id
           author

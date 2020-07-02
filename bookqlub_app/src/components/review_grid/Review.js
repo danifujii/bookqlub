@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import SubjectRoundedIcon from "@material-ui/icons/SubjectRounded";
-import { IconButton, ClickAwayListener, Tooltip } from "@material-ui/core";
+import {
+  IconButton,
+  ClickAwayListener,
+  Tooltip,
+  withStyles,
+} from "@material-ui/core";
 import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
@@ -44,7 +49,7 @@ export const Review = (props) => {
 
         {hovering && (
           <div className="ReviewDeleteButton">
-            <ReviewComment />
+            <ReviewComment comment={review.comment} />
             <IconButton onClick={onDeleteClick}>
               <DeleteOutlineRoundedIcon />
             </IconButton>
@@ -69,27 +74,39 @@ const ReviewComment = (props) => {
     setOpen(false);
   };
 
+  if (!comment) {
+    return null;
+  }
+
   return (
-    <div>
-      <ClickAwayListener onClickAway={handleClose}>
-        <div>
-          <Tooltip
-            onClose={handleClose}
-            open={open}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-            title="Hello!"
-          >
-            <IconButton>
-              <SubjectRoundedIcon onClick={() => setOpen(true)} />
-            </IconButton>
-          </Tooltip>
-        </div>
-      </ClickAwayListener>
+    <div className="ReviewCommentContainer">
+      <HtmlTooltip
+        onClose={handleClose}
+        open={open}
+        title={
+          <React.Fragment>
+            <p>{comment}</p>
+          </React.Fragment>
+        }
+      >
+        <IconButton>
+          <SubjectRoundedIcon onClick={() => setOpen(true)} />
+        </IconButton>
+      </HtmlTooltip>
     </div>
   );
 };
+
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    maxWidth: 400,
+    backgroundColor: "#f5f5f9",
+    border: "1px solid #dadde9",
+    color: "#323232",
+    fontSize: theme.typography.pxToRem(14),
+    fontWeight: 400,
+  },
+}))(Tooltip);
 
 function getDate(createdDate) {
   const date = new Date(createdDate);

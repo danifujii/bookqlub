@@ -68,3 +68,7 @@
     margin-right: 36px;
     margin-bottom: 36px;
 }
+
+.ReviewCommentContainer {
+    display: inline;
+}
