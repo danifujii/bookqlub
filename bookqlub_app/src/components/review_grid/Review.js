@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import SubjectRoundedIcon from "@material-ui/icons/SubjectRounded";
-import { IconButton } from "@material-ui/core";
+import { IconButton, ClickAwayListener, Tooltip } from "@material-ui/core";
 import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
@@ -44,9 +44,7 @@ export const Review = (props) => {
 
         {hovering && (
           <div className="ReviewDeleteButton">
-            <IconButton>
-              <SubjectRoundedIcon />
-            </IconButton>
+            <ReviewComment />
             <IconButton onClick={onDeleteClick}>
               <DeleteOutlineRoundedIcon />
             </IconButton>
@@ -59,6 +57,36 @@ export const Review = (props) => {
           onDelete={handleDelete}
         />
       </div>
+    </div>
+  );
+};
+
+const ReviewComment = (props) => {
+  const { comment } = props;
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div>
+      <ClickAwayListener onClickAway={handleClose}>
+        <div>
+          <Tooltip
+            onClose={handleClose}
+            open={open}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+            title="Hello!"
+          >
+            <IconButton>
+              <SubjectRoundedIcon onClick={() => setOpen(true)} />
+            </IconButton>
+          </Tooltip>
+        </div>
+      </ClickAwayListener>
     </div>
   );
 };
