@@ -40,3 +40,19 @@
     font-style: italic;
     min-width: 300px;
 }
+
+.AddReviewSuggestLinkContainer {
+    margin-top: 8px;
+}
+
+.AddReviewContentContainer a{
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #C42D5F;
+    text-decoration: none;
+}
+
+.AddReviewContentContainer a:visited{
+    color: #C42D5F;
+    text-decoration: none;
+}
