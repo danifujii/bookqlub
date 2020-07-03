@@ -145,3 +145,9 @@
     font-size: 2em;
     display: inline-block;
 }
+
+.SectionHeader {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+    margin-top: 8px;
+}

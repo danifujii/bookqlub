@@ -43,3 +43,12 @@ class Review(Base):
     created = SA.Column(SA.DateTime)
 
     book = SA.orm.relationship("Book")
+
+
+class Backlog(Base):
+    __tablename__ = "backlogs"
+
+    user_id = SA.Column(SA.Integer, SA.ForeignKey("users.id"), primary_key=True)
+    book_id = SA.Column(SA.Integer, SA.ForeignKey("books.id"), primary_key=True)
+
+    book = SA.orm.relationship("Book")

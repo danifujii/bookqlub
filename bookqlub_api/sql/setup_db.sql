@@ -27,6 +27,14 @@ CREATE TABLE reviews (
     PRIMARY KEY(user_id, book_id)
 );
 
+CREATE TABLE backlogs (
+    user_id INTEGER NOT NULL,
+    book_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (book_id) REFERENCES books (id),
+    PRIMARY KEY(user_id, book_id)
+)
+
 CREATE TRIGGER tsvectorupdate
     BEFORE INSERT OR UPDATE
     ON books FOR EACH ROW
