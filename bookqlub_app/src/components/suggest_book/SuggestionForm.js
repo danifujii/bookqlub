@@ -23,7 +23,7 @@ export const SuggestionForm = (props) => {
       <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <h3 className="SuggestInputHeader">Title</h3>
         <TextField
-          label="Book title"
+          label="Book title *"
           variant="outlined"
           className="SuggestInput"
           name="title"
@@ -38,7 +38,7 @@ export const SuggestionForm = (props) => {
 
         <h3 className="SuggestInputHeader">Author</h3>
         <TextField
-          label="Book author"
+          label="Book author *"
           variant="outlined"
           className="SuggestInput"
           name="author"
