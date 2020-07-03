@@ -7,6 +7,7 @@ import { Footer } from "./common/Footer";
 import { Navbar } from "./common/Navbar";
 import { Switch, Route } from "react-router-dom";
 import { BacklogContainer } from "./backlog/BacklogContainer";
+import { Page404 } from "./common/Page404";
 
 export const Homepage = () => {
   return (
@@ -17,6 +18,7 @@ export const Homepage = () => {
         <Switch>
           <Route exact path="/" component={ReviewsContainer} />
           <Route path="/backlog" component={BacklogContainer} />
+          <Route path="*" component={Page404} />
         </Switch>
         <Footer />
       </Container>

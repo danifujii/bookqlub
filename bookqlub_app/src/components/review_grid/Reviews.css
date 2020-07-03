@@ -1,3 +1,9 @@
+.ReviewHeader {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 900;
+    margin-top: 8px;
+}
+
 .ReviewContainer {
     display: flex;
     height: 200px;
