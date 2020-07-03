@@ -1,22 +1,15 @@
 import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import { IconButton } from "@material-ui/core";
-import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
-  const { review, onDelete } = props;
+  const { book, review, onDeleteClick } = props;
 
   const [hovering, setHovering] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const onDeleteClick = () => {
+  const handleDeleteClick = () => {
     setHovering(false);
-    setDeleteOpen(true);
-  };
-
-  const handleDelete = () => {
-    setDeleteOpen(false);
-    onDelete();
+    onDeleteClick();
   };
 
   return (
@@ -26,34 +19,30 @@ export const Review = (props) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="ReviewCover">
-        <img
-          src={review.book.coverUrl}
-          alt={`${review.book.title} cover`}
-          height="200px"
-        />
+        <img src={book.coverUrl} alt={`${book.title} cover`} height="200px" />
       </div>
 
       <div className="ReviewDetailContainer">
-        <p className="ReviewDetailTitle">{review.book.title}</p>
-        <p>
-          <i>{review.book.author}</i>
-        </p>
-        <p className="ReviewDetailValue">{review.value}</p>
-        <p className="ReviewDetailDate">{getDate(review.created)}</p>
+        <div>
+          <p className="ReviewDetailTitle">{book.title}</p>
+          <p className="ReviewDetailAuthor">
+            <i>{book.author}</i>
+          </p>
+          {review && (
+            <div>
+              <p className="ReviewDetailValue">{review.value}</p>
+              <p className="ReviewDetailDate">{getDate(review.created)}</p>
+            </div>
+          )}
 
-        {hovering && (
-          <div className="ReviewDeleteButton">
-            <IconButton onClick={onDeleteClick}>
-              <DeleteOutlineRoundedIcon />
-            </IconButton>
-          </div>
-        )}
-        <ReviewDeleteDialog
-          bookId={review.book.id}
-          open={deleteOpen}
-          onClose={() => setDeleteOpen(false)}
-          onDelete={handleDelete}
-        />
+          {hovering && onDeleteClick && (
+            <div className="ReviewDeleteButton">
+              <IconButton onClick={handleDeleteClick}>
+                <DeleteOutlineRoundedIcon />
+              </IconButton>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

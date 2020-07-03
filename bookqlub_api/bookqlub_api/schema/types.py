@@ -29,3 +29,8 @@ class PageInfo(graphene.ObjectType):
 class ReviewList(graphene.ObjectType):
     items = graphene.List(Review)
     page_info = graphene.Field(PageInfo)
+
+
+class Backlog(graphene_sqlalchemy.SQLAlchemyObjectType):
+    class Meta:
+        model = models.Backlog
