@@ -1,0 +1,19 @@
+.SuggestInputHeader {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    font-size: 1em;
+    font-weight: 500;
+}
+.SuggestInput {
+    width: 100%;
+}
+
+.SuggestMessage {
+    margin-bottom: 8px;
+}
+
+.SuggestButton {
+    text-align: right;
+    padding-top: 16px;
+}

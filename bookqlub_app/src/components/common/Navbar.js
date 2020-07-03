@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const linkTitles = {
   "/": "Reviews",
+  "/suggest_book": "Suggest book",
 };
 
 export const Navbar = () => {
