@@ -20,7 +20,7 @@ export const SuggestionForm = (props) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
         <h3 className="SuggestInputHeader">Title</h3>
         <TextField
           label="Book title"
