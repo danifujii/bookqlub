@@ -117,6 +117,9 @@ class AddBacklogEntry(graphene.Mutation):
     def mutate(root, info, book_id):
         user_id = utils.validate_user_id(request, info.context["secret"])
 
+        if user_id in info.context.get("demo_user_ids", frozenset()):
+            raise Exception("Invalid action for demo user")
+
         prev_backlog_entry = (
             types.Backlog.get_query(info)
             .filter(models.Backlog.user_id == user_id)
@@ -162,10 +165,33 @@ class CreateBookSuggestion(graphene.Mutation):
         return CreateBookSuggestion(book=new_book)
 
 
+class DeleteBacklogEntry(graphene.Mutation):
+    class Arguments:
+        book_id = graphene.ID()
+
+    ok = graphene.Boolean()
+
+    @utils.rollback_on_exception
+    def mutate(root, info, book_id):
+        user_id = utils.validate_user_id(request, info.context["secret"])
+
+        if user_id in info.context.get("demo_user_ids", frozenset()):
+            raise Exception("Invalid action for demo user")
+
+        session = info.context["session"]
+        types.Backlog.get_query(info).filter(models.Backlog.book_id == book_id).filter(
+            models.Backlog.user_id == user_id
+        ).delete()
+        session.commit()
+
+        return DeleteBacklogEntry(ok=True)
+
+
 class Mutation(graphene.ObjectType):
     create_book_suggestion = CreateBookSuggestion.Field()
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
     delete_review = DeleteReview.Field()
     add_backlog_entry = AddBacklogEntry.Field()
+    delete_backlog_entry = DeleteBacklogEntry.Field()
     login = Login.Field()
