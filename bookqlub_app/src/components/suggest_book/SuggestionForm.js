@@ -6,7 +6,7 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import LibraryAddRoundedIcon from "@material-ui/icons/LibraryAddRounded";
 import { useForm } from "react-hook-form";
 import { gql, useMutation } from "@apollo/client";
@@ -37,8 +37,8 @@ const BOOK_SUGG_MUTATION = gql`
 
 export const SuggestionForm = () => {
   const [releaseDate, setReleaseDate] = useState(new Date());
-  const { register, handleSubmit, errors } = useForm();
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const { register, reset, handleSubmit, errors } = useForm();
   const [addBookSugg, { loading, error }] = useMutation(BOOK_SUGG_MUTATION);
 
   const onSubmit = (data, e) => {
@@ -49,7 +49,10 @@ export const SuggestionForm = () => {
       release_date: releaseDate.toISOString().split("T")[0],
     };
     addBookSugg({ variables: variables })
-      .then(() => e.target.reset())
+      .then(() => {
+        reset();
+        setSnackbarOpen(true);
+      })
       .catch((e) => console.log(e));
   };
 
@@ -131,6 +134,13 @@ export const SuggestionForm = () => {
           )}
         </div>
       </form>
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        autoHideDuration={4000}
+        message="Suggestion successfully saved. Thank you."
+      />
     </div>
   );
 };
