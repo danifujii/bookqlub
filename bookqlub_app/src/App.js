@@ -38,9 +38,6 @@ const client = new ApolloClient({
       ReviewList: {
         keyFields: ["pageInfo", ["currentPage"]],
       },
-      Review: {
-        keyFields: ["book", ["id"]],
-      },
     },
   }),
 });

@@ -104,7 +104,35 @@ class DeleteReview(graphene.Mutation):
         ).delete()
         session.commit()
 
-        return {"ok": True}
+        return DeleteReview(ok=True)
+
+
+class AddBacklogEntry(graphene.Mutation):
+    class Arguments:
+        book_id = graphene.ID()
+
+    ok = graphene.Boolean()
+
+    @utils.rollback_on_exception
+    def mutate(root, info, book_id):
+        user_id = utils.validate_user_id(request, info.context["secret"])
+
+        prev_backlog_entry = (
+            types.Backlog.get_query(info)
+            .filter(models.Backlog.user_id == user_id)
+            .filter(models.Backlog.book_id == book_id)
+            .first()
+        )
+        if prev_backlog_entry:
+            raise ValueError("Book already in backlog")
+
+        backlog_entry = models.Backlog(user_id=user_id, book_id=book_id)
+
+        session = info.context["session"]
+        session.add(backlog_entry)
+        session.commit()
+
+        return AddBacklogEntry(ok=True)
 
 
 class CreateBookSuggestion(graphene.Mutation):
@@ -139,4 +167,5 @@ class Mutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
     delete_review = DeleteReview.Field()
+    add_backlog_entry = AddBacklogEntry.Field()
     login = Login.Field()
