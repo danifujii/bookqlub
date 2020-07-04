@@ -11,6 +11,11 @@
     width: 130px;
 }
 
+.ReviewCoverImg {
+    max-width: 130px;
+    height: 200px;
+}
+
 .ReviewDetailContainer {
     flex: 2;
     align-items: center;

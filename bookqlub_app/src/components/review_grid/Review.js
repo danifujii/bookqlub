@@ -19,7 +19,11 @@ export const Review = (props) => {
       onMouseLeave={() => setHovering(false)}
     >
       <div className="ReviewCover">
-        <img src={book.coverUrl} alt={`${book.title} cover`} height="200px" />
+        <img
+          src={book.coverUrl}
+          alt={`${book.title} cover`}
+          className="ReviewCoverImg"
+        />
       </div>
 
       <div className="ReviewDetailContainer">
