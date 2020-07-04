@@ -107,7 +107,35 @@ class DeleteReview(graphene.Mutation):
         return {"ok": True}
 
 
+class CreateBookSuggestion(graphene.Mutation):
+    class Arguments:
+        title = graphene.String()
+        author = graphene.String()
+        cover_url = graphene.String(required=False)
+        release_date = graphene.Date(required=False)
+
+    book = graphene.Field(lambda: types.Book)
+
+    @utils.rollback_on_exception
+    def mutate(root, info, title, author, cover_url=None, release_date=None):
+        _ = utils.validate_user_id(request, info.context["secret"])
+
+        new_book = models.Book(
+            title=title,
+            author=author,
+            release_date=release_date,
+            cover_url=cover_url,
+            suggestion=True,
+        )
+        session = info.context["session"]
+        session.add(new_book)
+        session.commit()
+
+        return CreateBookSuggestion(book=new_book)
+
+
 class Mutation(graphene.ObjectType):
+    create_book_suggestion = CreateBookSuggestion.Field()
     create_user = CreateUser.Field()
     create_review = CreateReview.Field()
     delete_review = DeleteReview.Field()

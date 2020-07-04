@@ -354,3 +354,48 @@ class TestBooksSchema(BaseTestSchema):
         )
         # It would be 3 if the previous added Book was not a suggestion
         self.assertEqual(len(books), 2)
+
+
+class TestBookSuggestion(BaseTestSchema):
+
+    book_sugg_mutation = """
+        mutation create(
+            $author: String!, $title: String!, $release_date: Date, $cover_url: String
+        ) {
+            createBookSuggestion(
+                author: $author, title: $title, releaseDate: $release_date, coverUrl: $cover_url
+            ) {
+                book {
+                    title
+                    suggestion
+                }
+            }
+        }
+    """
+
+    def testCreateBookSuggestion(self):
+        variables = {
+            "author": "A new author",
+            "title": "The very new book",
+            "cover_url": "https://googleimg.com",
+        }
+        res = self.graphql_request(self.book_sugg_mutation, variables, self.get_headers_with_auth())
+        book = res.get("data", {}).get("createBookSuggestion", {}).get("book", {})
+        self.assertEqual(book.get("title"), variables.get("title"))
+        self.assertTrue(book.get("suggestion"))
+
+        # Check it was actually saved on the DB
+        book = self.session.query(models.Book).first()
+        self.assertTrue(book)
+        self.assertEqual(book.title, variables.get("title"))
+        self.assertTrue(book.suggestion)
+
+    def testCreateBookSuggestionAuth(self):
+        variables = {
+            "author": "A new author",
+            "title": "The very new book",
+            "cover_url": "https://googleimg.com",
+        }
+        errors = self.graphql_request(self.book_sugg_mutation, variables).get("errors")
+        self.assertTrue(errors)
+        self.assertEqual(errors[0].get("message"), "Invalid authentication token")
