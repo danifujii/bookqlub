@@ -339,3 +339,61 @@ class TestBooksSchema(BaseTestSchema):
             .get("booksByTitle", [])
         )
         self.assertEqual(len(books), queries.SEARCH_LIMIT)
+
+
+class TestBacklogSchema(BaseTestSchema):
+
+    backlog_mutation = """
+        mutation AddBacklogEntry($book_id: ID!) {
+            addBacklogEntry(bookId: $book_id) {
+                ok
+            }
+        }
+    """
+
+    def test_create_backlog_entry(self):
+        book_id = 512
+        user_id = 1024
+        variables = {"book_id": book_id}
+        self.graphql_request(
+            self.backlog_mutation, variables, headers=self.get_headers_with_auth(user_id=user_id)
+        )
+
+        backlog_entry = (
+            self.session.query(models.Backlog)
+            .filter(models.Backlog.user_id == user_id)
+            .filter(models.Backlog.book_id == book_id)
+            .first()
+        )
+        self.assertTrue(backlog_entry)
+
+    def test_create_backlog_already_existing(self):
+        user_id = 8
+        book_id = 16
+        self.session.add(models.Backlog(user_id=user_id, book_id=book_id))
+        self.session.commit()
+
+        variables = {"book_id": book_id}
+        errors = self.graphql_request(
+            self.backlog_mutation, variables, headers=self.get_headers_with_auth(user_id=user_id)
+        ).get("errors")
+        self.assertTrue(errors)
+        self.assertIn("Book already in", errors[0].get("message"))
+
+    def test_query_backlog(self):
+        user_id = 8
+        backlog_books = 10
+        reviewed_books = 5
+        for book_id in range(backlog_books):
+            self.session.add(models.Backlog(user_id=user_id, book_id=book_id))
+        for book_id in range(reviewed_books):
+            self.session.add(models.Review(user_id=user_id, book_id=book_id))
+
+        query = "{ backlog { bookId } }"
+        backlog_items = (
+            self.graphql_request(query, headers=self.get_headers_with_auth(user_id=user_id))
+            .get("data", {})
+            .get("backlog", [])
+        )
+
+        self.assertEqual(len(backlog_items), backlog_books - reviewed_books)

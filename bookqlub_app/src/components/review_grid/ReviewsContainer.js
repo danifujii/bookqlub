@@ -54,7 +54,7 @@ export const ReviewsContainer = () => {
 
   return (
     <div style={{ marginBottom: "24px" }}>
-      <h1 className="ReviewHeader">My reviews</h1>
+      <h1 className="SectionHeader">My reviews</h1>
       {years && !_.isEmpty(years) ? (
         <ReviewYearSelector onYearChanged={setSelectedYear} years={years} />
       ) : (

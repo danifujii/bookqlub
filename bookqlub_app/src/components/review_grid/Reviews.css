@@ -17,8 +17,15 @@
     width: 130px;
 }
 
+.ReviewCoverImg {
+    max-width: 130px;
+    height: 200px;
+}
+
 .ReviewDetailContainer {
     flex: 2;
+    align-items: center;
+    display: flex;
     padding: 0 16px;
     font-family: 'Public Sans', sans-serif;
     position: relative;
@@ -32,6 +39,13 @@
     font-weight: 800;
     font-size: 1.3em;
 
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.ReviewDetailAuthor {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
