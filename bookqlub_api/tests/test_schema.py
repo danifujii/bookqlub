@@ -300,9 +300,9 @@ class TestBooksSchema(BaseTestSchema):
 
     def setUp(self):
         super().setUp()
-        self.session.add(models.Book(title="This", author="Author"))
-        self.session.add(models.Book(title="Thi", author="Author"))
-        self.session.add(models.Book(title="The", author="Author"))
+        self.session.add(models.Book(title="This", author="Author", suggestion=False))
+        self.session.add(models.Book(title="Thi", author="Author", suggestion=False))
+        self.session.add(models.Book(title="The", author="Author", suggestion=False))
         self.session.commit()
 
     def testBooksTitleSearch(self):
@@ -317,8 +317,11 @@ class TestBooksSchema(BaseTestSchema):
     def testBooksFilterReviewed(self):
         user_id = 256
         book_id = 512
-        self.session.add(models.Book(id=book_id, title="This is", author="Another author"))
+        self.session.add(
+            models.Book(id=book_id, title="This is", author="Another author", suggestion=False)
+        )
         self.session.add(models.Review(user_id=user_id, book_id=book_id, value="GOOD"))
+        self.session.commit()
 
         books = (
             self.graphql_request(
@@ -331,7 +334,7 @@ class TestBooksSchema(BaseTestSchema):
 
     def testBooksBelowLimit(self):
         for n in range(queries.SEARCH_LIMIT * 2):
-            self.session.add(models.Book(title=f"The {n} book"))
+            self.session.add(models.Book(title=f"The {n} book", suggestion=False))
 
         books = (
             self.graphql_request(self.BOOKS_QUERY % "The", headers=self.get_headers_with_auth())
@@ -339,3 +342,15 @@ class TestBooksSchema(BaseTestSchema):
             .get("booksByTitle", [])
         )
         self.assertEqual(len(books), queries.SEARCH_LIMIT)
+
+    def testBooksReturnNoSuggestion(self):
+        self.session.add(models.Book(id=101, title="thi", author="", suggestion=True))
+        self.session.commit()
+
+        books = (
+            self.graphql_request(self.BOOKS_QUERY % "thi", headers=self.get_headers_with_auth())
+            .get("data", {})
+            .get("booksByTitle", [])
+        )
+        # It would be 3 if the previous added Book was not a suggestion
+        self.assertEqual(len(books), 2)
