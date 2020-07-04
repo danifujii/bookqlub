@@ -67,11 +67,9 @@ class CreateReview(graphene.Mutation):
     review = graphene.Field(lambda: types.Review)
 
     @utils.rollback_on_exception
+    @utils.invalid_for_demo_users
     def mutate(root, info, book_id, comment, value, date=None):
         user_id = utils.validate_user_id(request, info.context["secret"])
-
-        if user_id in info.context.get("demo_user_ids", frozenset()):
-            raise Exception("Invalid action for demo user")
 
         if not date:
             date = datetime.now()
@@ -92,11 +90,9 @@ class DeleteReview(graphene.Mutation):
     ok = graphene.Boolean()
 
     @utils.rollback_on_exception
+    @utils.invalid_for_demo_users
     def mutate(root, info, book_id):
         user_id = utils.validate_user_id(request, info.context["secret"])
-
-        if user_id in info.context.get("demo_user_ids", frozenset()):
-            raise Exception("Invalid action for demo user")
 
         session = info.context["session"]
         types.Review.get_query(info).filter(models.Review.book_id == book_id).filter(
@@ -114,11 +110,9 @@ class AddBacklogEntry(graphene.Mutation):
     ok = graphene.Boolean()
 
     @utils.rollback_on_exception
+    @utils.invalid_for_demo_users
     def mutate(root, info, book_id):
         user_id = utils.validate_user_id(request, info.context["secret"])
-
-        if user_id in info.context.get("demo_user_ids", frozenset()):
-            raise Exception("Invalid action for demo user")
 
         prev_backlog_entry = (
             types.Backlog.get_query(info)
@@ -145,11 +139,9 @@ class DeleteBacklogEntry(graphene.Mutation):
     ok = graphene.Boolean()
 
     @utils.rollback_on_exception
+    @utils.invalid_for_demo_users
     def mutate(root, info, book_id):
         user_id = utils.validate_user_id(request, info.context["secret"])
-
-        if user_id in info.context.get("demo_user_ids", frozenset()):
-            raise Exception("Invalid action for demo user")
 
         session = info.context["session"]
         types.Backlog.get_query(info).filter(models.Backlog.book_id == book_id).filter(
