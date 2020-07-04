@@ -6,19 +6,52 @@ import {
   KeyboardDatePicker,
 } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { Button } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import LibraryAddRoundedIcon from "@material-ui/icons/LibraryAddRounded";
 import { useForm } from "react-hook-form";
+import { gql, useMutation } from "@apollo/client";
 
 import { getFormError } from "../common/FormUtils";
 
 const URL_REGEX = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 
-export const SuggestionForm = (props) => {
-  const [releaseDate, setReleaseDate] = useState(undefined);
+const BOOK_SUGG_MUTATION = gql`
+  mutation CreateBookSuggestion(
+    $author: String!
+    $title: String!
+    $release_date: Date
+    $cover_url: String
+  ) {
+    createBookSuggestion(
+      author: $author
+      title: $title
+      releaseDate: $release_date
+      coverUrl: $cover_url
+    ) {
+      book {
+        title
+      }
+    }
+  }
+`;
+
+export const SuggestionForm = () => {
+  const [releaseDate, setReleaseDate] = useState(new Date());
   const { register, handleSubmit, errors } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const [addBookSugg, { loading, error }] = useMutation(BOOK_SUGG_MUTATION);
+
+  const onSubmit = (data, e) => {
+    const variables = {
+      author: data.author,
+      title: data.title,
+      cover_url: data.cover,
+      release_date: releaseDate.toISOString().split("T")[0],
+    };
+    addBookSugg({ variables: variables })
+      .then(() => e.target.reset())
+      .catch((e) => console.log(e));
+  };
 
   return (
     <div>
@@ -80,16 +113,22 @@ export const SuggestionForm = (props) => {
           />
         </MuiPickersUtilsProvider>
 
+        {error && <p className="ErrorMsg">{error.message}</p>}
+
         <div className="SuggestButton">
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            type="submit"
-            startIcon={<LibraryAddRoundedIcon />}
-          >
-            Suggest
-          </Button>
+          {loading ? (
+            <CircularProgress className="SuggestionProgressBar" />
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              type="submit"
+              startIcon={<LibraryAddRoundedIcon />}
+            >
+              Suggest
+            </Button>
+          )}
         </div>
       </form>
     </div>
