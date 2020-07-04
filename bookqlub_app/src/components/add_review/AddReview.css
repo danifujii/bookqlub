@@ -48,11 +48,11 @@
 .AddReviewContentContainer a{
     font-size: 0.9em;
     font-weight: 500;
-    color: #C42D5F;
+    color: #424242;
     text-decoration: none;
 }
 
 .AddReviewContentContainer a:visited{
-    color: #C42D5F;
+    color: #424242;
     text-decoration: none;
 }
