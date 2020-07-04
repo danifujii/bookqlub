@@ -3,7 +3,8 @@ import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import { gql, useMutation } from "@apollo/client";
 
 import { OrDivider } from "../common/OrDivider";
-import { onMutation } from "../common/FormUtils";
+import { onMutation, getFormError } from "../common/FormUtils";
+import { useForm } from "react-hook-form";
 
 const REGISTER = gql`
   mutation CreateUser(
@@ -22,11 +23,8 @@ const REGISTER = gql`
 
 export const RegisterForm = (props) => {
   const { onLogin } = props;
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [full_name, setFullname] = useState("");
-  const [inputError, setInputError] = useState(undefined);
-  const [register, { data, loading, error }] = useMutation(REGISTER);
+  const [registerUser, { data, loading, error }] = useMutation(REGISTER);
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
     if (data) {
@@ -34,14 +32,18 @@ export const RegisterForm = (props) => {
     }
   }, [data]);
 
-  const submit = (event) => {
+  const submit = (data, event) => {
     event.preventDefault();
-    onMutation(register, { full_name, username, password }, setInputError);
+    onMutation(registerUser, {
+      full_name: data.full_name,
+      username: data.username,
+      password: data.password,
+    });
   };
 
   return (
     <div>
-      <form onSubmit={submit}>
+      <form onSubmit={handleSubmit(submit)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -49,7 +51,14 @@ export const RegisterForm = (props) => {
               label="Full name"
               variant="outlined"
               className="LoginInput"
-              onChange={(e) => setFullname(e.target.value)}
+              name="full_name"
+              inputRef={register({
+                required: true,
+                minLength: 3,
+                maxLength: 150,
+              })}
+              error={errors.full_name}
+              helperText={getFormError(errors.full_name)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -58,7 +67,14 @@ export const RegisterForm = (props) => {
               label="Username"
               variant="outlined"
               className="LoginInput"
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              inputRef={register({
+                required: true,
+                minLength: 3,
+                maxLength: 80,
+              })}
+              error={errors.username}
+              helperText={getFormError(errors.username)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -68,14 +84,19 @@ export const RegisterForm = (props) => {
               variant="outlined"
               type="password"
               className="LoginInput"
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              inputRef={register({
+                required: true,
+                minLength: 8,
+                maxLength: 56, // To avoid bumping into bcrypt limit
+              })}
+              error={errors.password}
+              helperText={getFormError(errors.password)}
             />
           </Grid>
-          {(error || inputError) && (
+          {error && (
             <Grid item xs={12}>
-              <p className="ErrorMsg LoginErrorMsg">
-                {inputError || error.message}
-              </p>
+              <p className="ErrorMsg LoginErrorMsg">{error.message}</p>
             </Grid>
           )}
           <Grid item xs={12}>
