@@ -41,7 +41,7 @@ export const BacklogContainer = () => {
       {loading ? (
         <LinearProgress />
       ) : (
-        data && <BacklogGrid backlog={data.backlog} />
+        data && <BacklogGrid backlog={data.backlog} onDelete={getBooks} />
       )}
     </div>
   );

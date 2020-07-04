@@ -50,6 +50,13 @@ class BaseTestSchema(unittest.TestCase):
             token = schema_utils.create_token(user_id, utils.config["app"]["secret"])
         return {"Authorization": f"Bearer {token}"}
 
+    def assertDemoInvalidAction(self, query: str, variables: dict = None):
+        errors = self.graphql_request(
+            query, variables, self.get_headers_with_auth(user_id=self.demo_user_id)
+        ).get("errors")
+        self.assertTrue(errors)
+        self.assertIn("Invalid action", errors[0].get("message"))
+
 
 class TestUserSchema(BaseTestSchema):
 
@@ -184,11 +191,7 @@ class TestReviewSchema(BaseTestSchema):
             "comment": "Pretty good book",
             "value": "GOOD",
         }
-        errors = self.graphql_request(
-            self.review_mutation, variables, self.get_headers_with_auth(user_id=self.demo_user_id)
-        ).get("errors")
-        self.assertTrue(errors)
-        self.assertIn("Invalid action", errors[0].get("message"))
+        self.assertDemoInvalidAction(self.review_mutation, variables)
 
     def test_review_years(self):
         years = [2020, 2019, 2018]
@@ -244,13 +247,7 @@ class TestReviewSchema(BaseTestSchema):
 
     def test_delete_review_demo_user(self):
         variables = {"book_id": 1}
-        errors = self.graphql_request(
-            self.delete_mutation,
-            variables,
-            headers=self.get_headers_with_auth(user_id=self.demo_user_id),
-        ).get("errors")
-        self.assertTrue(errors)
-        self.assertIn("Invalid action", errors[0].get("message"))
+        self.assertDemoInvalidAction(self.delete_mutation, variables)
 
 
 class TestReviewListSchema(BaseTestSchema):
@@ -305,7 +302,7 @@ class TestBooksSchema(BaseTestSchema):
         self.session.add(models.Book(title="The", author="Author", suggestion=False))
         self.session.commit()
 
-    def testBooksTitleSearch(self):
+    def test_books_title_search(self):
         books = (
             self.graphql_request(self.BOOKS_QUERY % "thi", headers=self.get_headers_with_auth())
             .get("data", {})
@@ -314,7 +311,7 @@ class TestBooksSchema(BaseTestSchema):
         for book_info in books:
             self.assertIn("thi", book_info["title"].lower())
 
-    def testBooksFilterReviewed(self):
+    def test_books_filter_reviewed(self):
         user_id = 256
         book_id = 512
         self.session.add(
@@ -332,7 +329,7 @@ class TestBooksSchema(BaseTestSchema):
         )
         self.assertEqual(len(books), 2)
 
-    def testBooksBelowLimit(self):
+    def test_books_below_limit(self):
         for n in range(queries.SEARCH_LIMIT * 2):
             self.session.add(models.Book(title=f"The {n} book", suggestion=False))
 
@@ -366,6 +363,14 @@ class TestBacklogSchema(BaseTestSchema):
         }
     """
 
+    delete_mutation = """
+        mutation DeleteEntry($book_id: ID!) {
+            deleteBacklogEntry(bookId: $book_id) {
+                ok
+            }
+        }
+    """
+
     def test_create_backlog_entry(self):
         book_id = 512
         user_id = 1024
@@ -381,6 +386,10 @@ class TestBacklogSchema(BaseTestSchema):
             .first()
         )
         self.assertTrue(backlog_entry)
+
+    def test_create_backlog_entry_demo_user(self):
+        variables = {"book_id": 1, "user_id": 2}
+        self.assertDemoInvalidAction(self.backlog_mutation, variables)
 
     def test_create_backlog_already_existing(self):
         user_id = 8
@@ -403,6 +412,7 @@ class TestBacklogSchema(BaseTestSchema):
             self.session.add(models.Backlog(user_id=user_id, book_id=book_id))
         for book_id in range(reviewed_books):
             self.session.add(models.Review(user_id=user_id, book_id=book_id))
+        self.session.commit()
 
         query = "{ backlog { bookId } }"
         backlog_items = (
@@ -412,6 +422,26 @@ class TestBacklogSchema(BaseTestSchema):
         )
 
         self.assertEqual(len(backlog_items), backlog_books - reviewed_books)
+
+    def test_delete_backlog_entry(self):
+        # Add Backlog item and check its existence
+        user_id = 2
+        book_id = 4
+        self.session.add(models.Backlog(user_id=user_id, book_id=book_id))
+        self.session.commit()
+        self.assertTrue(self.session.query(models.Backlog).all())
+
+        # Delete backlog entry
+        variables = {"book_id": book_id}
+        self.graphql_request(
+            self.delete_mutation, variables, self.get_headers_with_auth(user_id=user_id)
+        )
+
+        # Check it was deleted
+        self.assertFalse(self.session.query(models.Backlog).all())
+
+    def test_delete_backlog_entry_demo_user(self):
+        self.assertDemoInvalidAction(self.delete_mutation, {"book_id": 1})
 
 
 class TestBookSuggestion(BaseTestSchema):
