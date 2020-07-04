@@ -10,6 +10,8 @@ import { Button } from "@material-ui/core";
 import LibraryAddRoundedIcon from "@material-ui/icons/LibraryAddRounded";
 import { useForm } from "react-hook-form";
 
+import { getFormError } from "../common/FormUtils";
+
 const URL_REGEX = /https?:\/\/(www.)?[-a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 
 export const SuggestionForm = (props) => {
@@ -33,7 +35,7 @@ export const SuggestionForm = (props) => {
             maxLength: 300,
           })}
           error={errors.title !== undefined}
-          helperText={errors.title && "Invalid book title"}
+          helperText={getFormError(errors.title)}
         />
 
         <h3 className="SuggestInputHeader">Author</h3>
@@ -44,7 +46,7 @@ export const SuggestionForm = (props) => {
           name="author"
           inputRef={register({ required: true, minLength: 10, maxLength: 200 })}
           error={errors.author !== undefined}
-          helperText={errors.author && "Invalid author"}
+          helperText={getFormError(errors.author)}
         />
 
         <h3 className="SuggestInputHeader">Cover URL</h3>

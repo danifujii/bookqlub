@@ -13,3 +13,18 @@ export const onMutation = (mutation, variables, setInputError) => {
     mutation({ variables: variables }).catch((_) => {});
   }
 };
+
+export const getFormError = (error) => {
+  if (!error) return undefined;
+
+  switch (error.type) {
+    case "required":
+      return "Field required";
+    case "minLength":
+      return "Field value is too short";
+    case "maxLength":
+      return "Field value is too long";
+    default:
+      return "Invalid field value";
+  }
+};
