@@ -40,7 +40,7 @@ def rollback_on_exception(func: Callable):
 
 def invalid_for_demo_users(func: Callable):
     def invalid_wrapper(root, info, *args, **kwargs):
-        user_id = validate_user_id(request, info.context["secret"])
+        user_id = get_user_id(request, info.context["secret"])
 
         if user_id in info.context.get("demo_user_ids", frozenset()):
             raise Exception("Invalid action for demo user")
