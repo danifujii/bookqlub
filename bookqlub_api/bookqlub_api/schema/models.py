@@ -24,6 +24,7 @@ class Book(Base):
     author = SA.Column(SA.String)
     release_date = SA.Column(SA.DateTime)
     cover_url = SA.Column(SA.String)
+    suggestion = SA.Column(SA.Boolean, default=True)
 
 
 class ReviewValue(enum.Enum):

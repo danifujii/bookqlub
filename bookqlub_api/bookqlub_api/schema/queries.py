@@ -29,7 +29,11 @@ class Query(graphene.ObjectType):
         reviewed_books_ids = (
             session.query(models.Review.book_id).filter(models.Review.user_id == user_id).subquery()
         )
-        books_query = types.Book.get_query(info).filter(models.Book.title.ilike(f"%{title}%"))
+        books_query = (
+            types.Book.get_query(info)
+            .filter(models.Book.title.ilike(f"%{title}%"))
+            .filter(SA.not_(models.Book.suggestion))
+        )
         if not already_reviewed:
             books_query = books_query.filter(models.Book.id.notin_(reviewed_books_ids))
         return books_query.limit(SEARCH_LIMIT).all()

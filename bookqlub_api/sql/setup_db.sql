@@ -11,6 +11,7 @@ CREATE TABLE books (
     author          VARCHAR NOT NULL,
     release_date    TIMESTAMP WITHOUT TIME ZONE,
     cover_url       VARCHAR,
+    suggestion      BOOLEAN     DEFAULT TRUE,
     title_tsv       TSVECTOR
 );
 
