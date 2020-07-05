@@ -102,6 +102,9 @@ const AddReviewModalForm = (props) => {
 
       <h3 className="AddReviewSubtitle">Title</h3>
       <BookTitleInput onSetBook={setBook} onError={setTitleError} />
+      <div className="AddReviewSuggestLinkContainer">
+        <a href="/suggest_book">Suggest new book</a>
+      </div>
 
       <h3 className="AddReviewSubtitle">Value</h3>
       <Select

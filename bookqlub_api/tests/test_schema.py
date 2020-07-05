@@ -297,9 +297,9 @@ class TestBooksSchema(BaseTestSchema):
 
     def setUp(self):
         super().setUp()
-        self.session.add(models.Book(title="This", author="Author"))
-        self.session.add(models.Book(title="Thi", author="Author"))
-        self.session.add(models.Book(title="The", author="Author"))
+        self.session.add(models.Book(title="This", author="Author", suggestion=False))
+        self.session.add(models.Book(title="Thi", author="Author", suggestion=False))
+        self.session.add(models.Book(title="The", author="Author", suggestion=False))
         self.session.commit()
 
     def test_books_title_search(self):
@@ -314,8 +314,11 @@ class TestBooksSchema(BaseTestSchema):
     def test_books_filter_reviewed(self):
         user_id = 256
         book_id = 512
-        self.session.add(models.Book(id=book_id, title="This is", author="Another author"))
+        self.session.add(
+            models.Book(id=book_id, title="This is", author="Another author", suggestion=False)
+        )
         self.session.add(models.Review(user_id=user_id, book_id=book_id, value="GOOD"))
+        self.session.commit()
 
         books = (
             self.graphql_request(
@@ -328,7 +331,7 @@ class TestBooksSchema(BaseTestSchema):
 
     def test_books_below_limit(self):
         for n in range(queries.SEARCH_LIMIT * 2):
-            self.session.add(models.Book(title=f"The {n} book"))
+            self.session.add(models.Book(title=f"The {n} book", suggestion=False))
 
         books = (
             self.graphql_request(self.BOOKS_QUERY % "The", headers=self.get_headers_with_auth())
@@ -336,6 +339,18 @@ class TestBooksSchema(BaseTestSchema):
             .get("booksByTitle", [])
         )
         self.assertEqual(len(books), queries.SEARCH_LIMIT)
+
+    def testBooksReturnNoSuggestion(self):
+        self.session.add(models.Book(id=101, title="thi", author="", suggestion=True))
+        self.session.commit()
+
+        books = (
+            self.graphql_request(self.BOOKS_QUERY % "thi", headers=self.get_headers_with_auth())
+            .get("data", {})
+            .get("booksByTitle", [])
+        )
+        # It would be 3 if the previous added Book was not a suggestion
+        self.assertEqual(len(books), 2)
 
 
 class TestBacklogSchema(BaseTestSchema):
@@ -427,3 +442,48 @@ class TestBacklogSchema(BaseTestSchema):
 
     def test_delete_backlog_entry_demo_user(self):
         self.assertDemoInvalidAction(self.delete_mutation, {"book_id": 1})
+
+
+class TestBookSuggestion(BaseTestSchema):
+
+    book_sugg_mutation = """
+        mutation create(
+            $author: String!, $title: String!, $release_date: Date, $cover_url: String
+        ) {
+            createBookSuggestion(
+                author: $author, title: $title, releaseDate: $release_date, coverUrl: $cover_url
+            ) {
+                book {
+                    title
+                    suggestion
+                }
+            }
+        }
+    """
+
+    def testCreateBookSuggestion(self):
+        variables = {
+            "author": "A new author",
+            "title": "The very new book",
+            "cover_url": "https://googleimg.com",
+        }
+        res = self.graphql_request(self.book_sugg_mutation, variables, self.get_headers_with_auth())
+        book = res.get("data", {}).get("createBookSuggestion", {}).get("book", {})
+        self.assertEqual(book.get("title"), variables.get("title"))
+        self.assertTrue(book.get("suggestion"))
+
+        # Check it was actually saved on the DB
+        book = self.session.query(models.Book).first()
+        self.assertTrue(book)
+        self.assertEqual(book.title, variables.get("title"))
+        self.assertTrue(book.suggestion)
+
+    def testCreateBookSuggestionAuth(self):
+        variables = {
+            "author": "A new author",
+            "title": "The very new book",
+            "cover_url": "https://googleimg.com",
+        }
+        errors = self.graphql_request(self.book_sugg_mutation, variables).get("errors")
+        self.assertTrue(errors)
+        self.assertEqual(errors[0].get("message"), "Invalid authentication token")
