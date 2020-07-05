@@ -13,3 +13,8 @@
 .BacklogGrid {
     margin: 24px 0;
 }
+
+.BacklogLoadingBar {
+    width: 100%;
+    max-width: 600px;
+}
