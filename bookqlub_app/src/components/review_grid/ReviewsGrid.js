@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import { LinearProgress, Grid } from "@material-ui/core";
+import _ from "lodash";
 
 import { Review } from "./Review";
 import { ReviewDeleteDialog } from "./ReviewDelete";
@@ -53,32 +54,38 @@ export const ReviewGrid = (props) => {
   const dataRef = useRef(data);
   const fetchMoreRef = useRef(fetchMore);
 
+  const fetchData = (currentData) => {
+    setLoadingMore(true);
+
+    fetchMoreRef.current({
+      query: GET_REVIEWS,
+      variables: {
+        year: props.year,
+        page: currentData.pageInfo.currentPage + 1,
+      },
+      updateQuery: (previousData, { fetchMoreResult }) => {
+        return {
+          reviews: {
+            pageInfo: fetchMoreResult.reviews.pageInfo,
+            items: [
+              ...previousData.reviews.items,
+              ...fetchMoreResult.reviews.items,
+            ],
+          },
+        };
+      },
+    });
+  };
+
+  const throttledFetchData = _.throttle(fetchData, 5000, { trailing: false });
+
   const trackScrolling = (_) => {
     const atBottom =
       window.innerHeight + window.scrollY >= document.body.scrollHeight;
     if (atBottom && dataRef.current && fetchMoreRef.current && !loadingMore) {
       const currentData = dataRef.current && dataRef.current.reviews;
       if (currentData.pageInfo.currentPage < currentData.pageInfo.totalPages) {
-        setLoadingMore(true);
-
-        fetchMoreRef.current({
-          query: GET_REVIEWS,
-          variables: {
-            year: props.year,
-            page: currentData.pageInfo.currentPage + 1,
-          },
-          updateQuery: (previousData, { fetchMoreResult }) => {
-            return {
-              reviews: {
-                pageInfo: fetchMoreResult.reviews.pageInfo,
-                items: [
-                  ...previousData.reviews.items,
-                  ...fetchMoreResult.reviews.items,
-                ],
-              },
-            };
-          },
-        });
+        throttledFetchData(currentData);
       }
     }
   };
@@ -93,6 +100,7 @@ export const ReviewGrid = (props) => {
     };
   }, []);
 
+  // Update fetched data
   useEffect(() => {
     if (data && data.reviews.items) {
       setReviewsPerMonth(getReviewsByMonth(data.reviews.items));
