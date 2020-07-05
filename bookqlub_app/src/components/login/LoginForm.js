@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, CircularProgress, Grid, TextField } from "@material-ui/core";
 import { gql, useMutation } from "@apollo/client";
+import { useForm } from "react-hook-form";
 
 import { OrDivider } from "../common/OrDivider";
 import { onMutation } from "../common/FormUtils";
@@ -18,9 +19,7 @@ const LOGIN = gql`
 
 const LoginFormFields = (props) => {
   const [login, { data, loading, error }] = useMutation(LOGIN);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [inputError, setInputError] = useState(undefined);
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
     if (data) {
@@ -29,23 +28,19 @@ const LoginFormFields = (props) => {
   }, [data]);
 
   const loginDemoUser = () => {
-    onMutation(
-      login,
-      {
-        username: process.env.REACT_APP_BOOKQLUB_DEMO_USERNAME,
-        password: process.env.REACT_APP_BOOKQLUB_DEMO_PASSWORD,
-      },
-      setInputError
-    );
+    onMutation(login, {
+      username: process.env.REACT_APP_BOOKQLUB_DEMO_USERNAME,
+      password: process.env.REACT_APP_BOOKQLUB_DEMO_PASSWORD,
+    });
   };
 
-  const submit = (event) => {
+  const submit = (data, event) => {
     event.preventDefault();
-    onMutation(login, { username, password }, setInputError);
+    onMutation(login, { username: data.username, password: data.password });
   };
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={handleSubmit(submit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <TextField
@@ -53,7 +48,10 @@ const LoginFormFields = (props) => {
             label="Username"
             variant="outlined"
             className="LoginInput"
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            inputRef={register({ required: true })}
+            error={errors.username}
+            helperText={errors.username && "Username is required"}
           />
         </Grid>
         <Grid item xs={12}>
@@ -63,14 +61,15 @@ const LoginFormFields = (props) => {
             variant="outlined"
             type="password"
             className="LoginInput"
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            inputRef={register({ required: true })}
+            error={errors.password}
+            helperText={errors.password && "Password is required"}
           />
         </Grid>
-        {(error || inputError) && (
+        {error && (
           <Grid item xs={12}>
-            <p className="ErrorMsg LoginErrorMsg">
-              {inputError || error.message}
-            </p>
+            <p className="ErrorMsg LoginErrorMsg">{error.message}</p>
           </Grid>
         )}
         <Grid item xs={12}>
