@@ -39,7 +39,7 @@ export const BacklogContainer = () => {
       <BacklogAdd onSuccessfulAdd={getBooks} />
       {error && <p className="ErrorMsg">{error.message}</p>}
       {loading ? (
-        <LinearProgress />
+        <LinearProgress className="BacklogLoadingBar" />
       ) : (
         data && <BacklogGrid backlog={data.backlog} onDelete={getBooks} />
       )}
