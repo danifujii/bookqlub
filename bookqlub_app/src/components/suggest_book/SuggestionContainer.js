@@ -10,7 +10,7 @@ export const SuggestionContainer = (props) => {
 
   return (
     <div>
-      <h1 className="ReviewHeader">Book suggestion</h1>
+      <h1 className="SectionHeader">Book suggestion</h1>
       <p className="SuggestMessage">
         You can suggest a book that is missing from the current database.
       </p>
