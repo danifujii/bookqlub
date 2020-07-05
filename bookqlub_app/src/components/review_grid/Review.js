@@ -43,7 +43,7 @@ export const Review = (props) => {
 
           {hovering && onDeleteClick && (
             <div className="ReviewDeleteButton">
-              <ReviewComment comment={review.comment} />
+              {review && <ReviewComment comment={review.comment} />}
               <IconButton onClick={handleDeleteClick}>
                 <DeleteOutlineRoundedIcon />
               </IconButton>
