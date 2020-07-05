@@ -9,7 +9,10 @@ export const Page404 = () => {
     <div className="Page404Container">
       <h1>404</h1>
       <h2>
-        Oops, page not found <span role="img">😢️</span>
+        Oops, page not found{" "}
+        <span role="img" aria-label="Sad emoji">
+          😢️
+        </span>
       </h2>
       <br />
       <Button color="primary" onClick={() => history.push("/")}>

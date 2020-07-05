@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import DeleteOutlineRoundedIcon from "@material-ui/icons/DeleteOutlineRounded";
 import SubjectRoundedIcon from "@material-ui/icons/SubjectRounded";
 import { IconButton, Tooltip, withStyles } from "@material-ui/core";
-import { ReviewDeleteDialog } from "./ReviewDelete";
 
 export const Review = (props) => {
   const { book, review, onDeleteClick } = props;
