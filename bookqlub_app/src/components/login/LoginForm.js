@@ -78,7 +78,7 @@ const LoginFormFields = (props) => {
           ) : (
             <div>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 size="large"
                 type="submit"
@@ -86,7 +86,7 @@ const LoginFormFields = (props) => {
                 Login
               </Button>
               <Button
-                variant="outlined"
+                variant="contained"
                 color="primary"
                 size="large"
                 style={{ marginLeft: 16 }}
